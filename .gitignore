@@ -28,3 +28,5 @@ build/
 
 # All contents of the out folder
 out/
+
+node_modules

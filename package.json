@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "prettier:check": "prettier . **/*.java --check",
+    "prettier:write": "prettier . **/*.java --write"
+  },
+  "devDependencies": {
+    "prettier-plugin-java": "^2.5.0"
+  }
+}

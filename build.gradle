@@ -17,7 +17,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": "nl.vu.cs.softwaredesign.Main"
+        attributes "Main-Class": "archiver.Main"
     }
 
     from {

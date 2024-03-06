@@ -1,4 +1,4 @@
-package nl.vu.cs.softwaredesign;
+package archiver;
 
 public class Main {
 

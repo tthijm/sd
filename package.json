@@ -1,9 +1,15 @@
 {
   "scripts": {
+    "postinstall": "husky",
     "prettier:check": "prettier . **/*.java --check",
     "prettier:write": "prettier . **/*.java --write"
   },
   "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
     "prettier-plugin-java": "^2.5.0"
+  },
+  "lint-staged": {
+    "*": "yarn prettier:write -u"
   }
 }

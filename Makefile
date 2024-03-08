@@ -1,20 +1,5 @@
-install:
-	npm i -g yarn && yarn
-
-jar:
-	./gradlew jar
-
-test:
-	./gradlew build
-
-run: jar
-	java -jar build/libs/software-design-vu-2024-1.0-SNAPSHOT.jar
-
-lint:
-	yarn prettier:check
-
-lint-fix:
-	yarn prettier:write
+run:
+	./gradlew jar && java -jar build/libs/software-design-vu-2024-1.0-SNAPSHOT.jar
 
 ifeq ($(shell whoami), bencematajsz)
 change:

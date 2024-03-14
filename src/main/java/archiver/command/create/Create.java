@@ -1,12 +1,16 @@
-package archiver;
+package archiver.command.create;
 
+import archiver.command.*;
+import archiver.config.Config;
+import archiver.format.Format;
+import archiver.format.zip.Zip;
 import java.io.*;
 import java.util.*;
 
-class Create extends Command {
+public class Create extends Command {
 
   @Override
-  void run(File[] arguments, HashMap<String, String> options) {
+  public void run(File[] arguments, HashMap<String, String> options) {
     Format compressionFormat;
     if (!options.containsKey("-f")) {
       compressionFormat = new Zip();
@@ -25,6 +29,11 @@ class Create extends Command {
       }
     }
     Config configurations = new Config();
-    compressionFormat.compress(arguments[0], arguments, configurations);
+
+    File[] filesToCompress = new File[arguments.length - 1];
+    for (int i = 0; i < filesToCompress.length; i++) {
+      filesToCompress[i] = arguments[i + 1];
+    }
+    compressionFormat.compress(arguments[0], filesToCompress, configurations);
   }
 }

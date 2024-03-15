@@ -30,16 +30,30 @@ public class Handler {
   }
 
   public void loop() {
-    String input = "";
+    Scanner inputStream = new Scanner(System.in);
+    String input;
+    Triplet<String, File[], HashMap<String, String>> parsedLine;
+    File[] argumentsArray;
+    HashMap<String, String> optionsMap;
 
-    Triplet<String, File[], HashMap<String, String>> parsedLine = parse(input);
-    File[] argumentsArray = parsedLine.getValue1();
+    do {
+      System.out.println("type next command:");
 
-    HashMap<String, String> optionsMap = parsedLine.getValue2();
+      input = inputStream.nextLine(); //"create has.zip testFolder";
+      parsedLine = parse(input);
+      argumentsArray = parsedLine.getValue1();
 
-    if (parsedLine.getValue0().equals("create")) {
-      Command createCommand = new Create();
-      createCommand.run(argumentsArray, optionsMap);
-    }
+      optionsMap = parsedLine.getValue2();
+
+      if (parsedLine.getValue0().equals("create")) {
+        Command createCommand = new Create();
+        createCommand.run(argumentsArray, optionsMap);
+      } else if (parsedLine.getValue0().equals("quit")) {
+        System.out.println("thank you for using our file archiver, quitting program");
+        return;
+      } else {
+        System.out.println("command not found");
+      }
+    } while (true);
   }
 }

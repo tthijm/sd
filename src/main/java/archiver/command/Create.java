@@ -1,9 +1,9 @@
-package archiver.command.create;
+package archiver.command;
 
 import archiver.command.*;
 import archiver.config.Config;
 import archiver.format.Format;
-import archiver.format.zip.Zip;
+import archiver.format.Zip;
 import java.io.*;
 import java.util.*;
 

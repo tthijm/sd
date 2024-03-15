@@ -1,7 +1,7 @@
 package archiver.handler;
 
 import archiver.command.*;
-import archiver.command.create.*;
+import archiver.command.*;
 import java.io.File;
 import java.util.*;
 import org.javatuples.*;
@@ -30,10 +30,9 @@ public class Handler {
   }
 
   public void loop() {
-    //ask input from the user
-    String userInput = "create has.zip file2.txt";
+    String input = "";
 
-    Triplet<String, File[], HashMap<String, String>> parsedLine = parse(userInput);
+    Triplet<String, File[], HashMap<String, String>> parsedLine = parse(input);
     File[] argumentsArray = parsedLine.getValue1();
 
     HashMap<String, String> optionsMap = parsedLine.getValue2();

@@ -34,7 +34,10 @@ public class Zip extends Format {
           add(nestedFile, output, name);
         }
       } else {
-        FileInputStream fInput = new FileInputStream(name);
+        if (path.equals("")) {
+          name = file.getName();
+        }
+        FileInputStream fInput = new FileInputStream(file);
         ZipEntry zipEntry = new ZipEntry(name);
         output.putNextEntry(zipEntry);
 
@@ -42,6 +45,7 @@ public class Zip extends Format {
         output.write(fileNumBytes, 0, fileNumBytes.length);
 
         fInput.close();
+        output.closeEntry();
       }
     } catch (IOException exception) {
       System.out.println(exception);

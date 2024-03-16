@@ -11,29 +11,45 @@ public class Create extends Command {
 
   @Override
   public void run(File[] arguments, HashMap<String, String> options) {
-    Format compressionFormat;
-    if (!options.containsKey("-f")) {
-      compressionFormat = new Zip();
-    } else {
-      String format = options.get("-f");
-      switch (format) {
-        case "tar":
-          compressionFormat = new Zip();
-          break;
-        case "bzip2":
-          compressionFormat = new Zip();
-          break;
-        default:
-          compressionFormat = new Zip();
-          break;
+    int validatedArguments = 1;
+    if (arguments.length <= 1 || !arguments[0].getName().contains(".zip") || arguments[0].isDirectory()) {
+      validatedArguments = 0;
+    }
+    if (arguments.length > 1) {
+      for (int i = 1; i < arguments.length; i++) {
+        if (!arguments[i].isFile() && !arguments[i].isDirectory()) {
+          System.out.println("Invalid file" + arguments[i].getName());
+          validatedArguments = 0;
+        }
       }
     }
-    Config configurations = new Config();
+    if (validatedArguments == 1) {
+      Format compressionFormat;
+      if (!options.containsKey("-f")) {
+        compressionFormat = new Zip();
+      } else {
+        String format = options.get("-f");
+        switch (format) {
+          case "tar":
+            compressionFormat = new Zip();
+            break;
+          case "bzip2":
+            compressionFormat = new Zip();
+            break;
+          default:
+            compressionFormat = new Zip();
+            break;
+        }
+      }
+      Config configurations = new Config();
 
-    File[] filesToCompress = new File[arguments.length - 1];
-    for (int i = 0; i < filesToCompress.length; i++) {
-      filesToCompress[i] = arguments[i + 1];
+      File[] filesToCompress = new File[arguments.length - 1];
+      for (int i = 0; i < filesToCompress.length; i++) {
+        filesToCompress[i] = arguments[i + 1];
+      }
+      compressionFormat.compress(arguments[0], filesToCompress, configurations);
+    } else {
+      System.out.println("Invalid arguments");
     }
-    compressionFormat.compress(arguments[0], filesToCompress, configurations);
   }
 }

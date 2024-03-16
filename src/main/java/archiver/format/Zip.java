@@ -17,7 +17,7 @@ public class Zip extends Format {
       ZipOutputStream zippedOutput = new ZipOutputStream(outputFile);
 
       for (File fileName : fileNames) {
-        add(fileName, zippedOutput, "");
+        add(fileName, zippedOutput, fileName.getName());
       }
       zippedOutput.close();
       outputFile.close();
@@ -26,17 +26,13 @@ public class Zip extends Format {
     }
   }
 
-  private void add(File file, ZipOutputStream output, String path) {
-    String name = path + "/" + file.getName();
+  private void add(File file, ZipOutputStream output, String name) {
     try {
       if (file.isDirectory()) {
         for (File nestedFile : file.listFiles()) {
-          add(nestedFile, output, name);
+          add(nestedFile, output, name + "/" + nestedFile.getName());
         }
       } else {
-        if (path.equals("")) {
-          name = file.getName();
-        }
         FileInputStream fInput = new FileInputStream(file);
         ZipEntry zipEntry = new ZipEntry(name);
         output.putNextEntry(zipEntry);

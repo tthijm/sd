@@ -1,6 +1,5 @@
 package archiver.command;
 
-import archiver.command.*;
 import archiver.config.Config;
 import archiver.format.Format;
 import archiver.format.Zip;

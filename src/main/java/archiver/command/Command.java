@@ -1,6 +1,5 @@
 package archiver.command;
 
-import archiver.format.Format;
 import java.io.*;
 import java.util.*;
 

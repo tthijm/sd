@@ -1,11 +1,9 @@
 package archiver.format;
 
 import archiver.config.Config;
-import archiver.format.Format;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.zip.*;
 
 public class Zip extends Format {
@@ -37,7 +35,7 @@ public class Zip extends Format {
         ZipEntry zipEntry = new ZipEntry(file.getPath());
         output.putNextEntry(zipEntry);
 
-        byte[] fileNumBytes = Files.readAllBytes(Paths.get(file.getName()));
+        byte[] fileNumBytes = Files.readAllBytes(Paths.get(file.getPath()));
         output.write(fileNumBytes, 0, fileNumBytes.length);
 
         fInput.close();
@@ -46,13 +44,6 @@ public class Zip extends Format {
     } catch (IOException exception) {
       exception.printStackTrace();
     }
-  }
-
-  private String getName(final File file) {
-    final String cwd = new File("").getAbsolutePath();
-    String t = file.getAbsolutePath();
-    String f = t.split(cwd)[1];
-    return f;
   }
 
   @Override

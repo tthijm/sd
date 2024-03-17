@@ -17,7 +17,7 @@ public class Zip extends Format {
       ZipOutputStream zippedOutput = new ZipOutputStream(outputFile);
 
       for (File fileName : fileNames) {
-        add(fileName, zippedOutput, fileName.getName());
+        add(fileName, zippedOutput);
       }
       zippedOutput.close();
       outputFile.close();
@@ -26,26 +26,33 @@ public class Zip extends Format {
     }
   }
 
-  private void add(File file, ZipOutputStream output, String name) {
+  private void add(File file, ZipOutputStream output) {
     try {
       if (file.isDirectory()) {
         for (File nestedFile : file.listFiles()) {
-          add(nestedFile, output, name + "/" + nestedFile.getName());
+          add(nestedFile, output);
         }
       } else {
         FileInputStream fInput = new FileInputStream(file);
-        ZipEntry zipEntry = new ZipEntry(name);
+        ZipEntry zipEntry = new ZipEntry(file.getPath());
         output.putNextEntry(zipEntry);
 
-        byte[] fileNumBytes = Files.readAllBytes(Paths.get(name));
+        byte[] fileNumBytes = Files.readAllBytes(Paths.get(file.getName()));
         output.write(fileNumBytes, 0, fileNumBytes.length);
 
         fInput.close();
         output.closeEntry();
       }
     } catch (IOException exception) {
-      System.out.println(exception);
+      exception.printStackTrace();
     }
+  }
+
+  private String getName(final File file) {
+    final String cwd = new File("").getAbsolutePath();
+    String t = file.getAbsolutePath();
+    String f = t.split(cwd)[1];
+    return f;
   }
 
   @Override

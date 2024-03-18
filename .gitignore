@@ -31,3 +31,4 @@ out/
 
 node_modules
 bin
+.DS_Store

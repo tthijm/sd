@@ -10,7 +10,6 @@ public class Create extends Command {
 
   @Override
   public void run(File[] arguments, HashMap<String, String> options) {
-    int validatedArguments = 1;
     if (arguments.length <= 1 || arguments[0].exists()) {
       System.out.println("Invalid input");
     }

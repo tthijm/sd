@@ -53,6 +53,7 @@ public class Handler {
       } else {
         System.out.println("command not found");
       }
+      inputStream.close();
     } while (true);
   }
 }

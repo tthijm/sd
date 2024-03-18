@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -28,6 +27,7 @@ public class Extract {
           throw new IOException("Error: incorrect path\nEntry: " + entry.getName());
         }
 
+        //Check if directory exists or can be created
         if (entry.isDirectory()) {
           if (!newFile.isDirectory() && !newFile.mkdirs()) {
             inputStream.closeEntry();
@@ -41,10 +41,20 @@ public class Extract {
             inputStream.close();
             throw new IOException("Error: failed to create directory\nEntry: " + parentFile);
           }
+
+          //Writing to the new file
+          FileOutputStream outputStream = new FileOutputStream(newFile);
+          byte[] buf = new byte[1024];
+          int len;
+          while ((len = inputStream.read(buf)) > 0) {
+            outputStream.write(buf, 0, len);
+          }
+          outputStream.close();
         }
-        inputStream.closeEntry();
-        inputStream.close();
+        entry = inputStream.getNextEntry();
       }
+      inputStream.closeEntry();
+      inputStream.close();
     } catch (IOException err) {
       System.out.println("An error has occurred: " + err.getMessage());
     }

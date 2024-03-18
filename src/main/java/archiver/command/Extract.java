@@ -10,16 +10,6 @@ import java.util.zip.ZipInputStream;
 
 public class Extract {
 
-  public File createFile(File dir, ZipEntry ent) throws IOException {
-    File newFile = new File(dir, ent.getName());
-
-    //Check for ZipSlip
-    if (!newFile.getCanonicalPath().startsWith(dir.getCanonicalPath() + File.separator)) {
-      throw new IOException("Error: incorrect path\nEntry: " + ent.getName());
-    }
-    return newFile;
-  }
-
   public void run(String[] args) {
     try {
       String archive = args[0];
@@ -29,7 +19,31 @@ public class Extract {
       ZipInputStream inputStream = new ZipInputStream(new FileInputStream(archive));
       ZipEntry entry = inputStream.getNextEntry();
       while (entry != null) {
-        File newFile = createFile(outputDir, entry);
+        File newFile = new File(outputDir, entry.getName());
+
+        //Check for ZipSlip
+        if (!newFile.getCanonicalPath().startsWith(outputDir.getCanonicalPath() + File.separator)) {
+          inputStream.closeEntry();
+          inputStream.close();
+          throw new IOException("Error: incorrect path\nEntry: " + entry.getName());
+        }
+
+        if (entry.isDirectory()) {
+          if (!newFile.isDirectory() && !newFile.mkdirs()) {
+            inputStream.closeEntry();
+            inputStream.close();
+            throw new IOException("Error: failed to create directory\nEntry: " + entry);
+          }
+        } else {
+          File parentFile = newFile.getParentFile();
+          if (!parentFile.isDirectory() && !parentFile.mkdirs()) {
+            inputStream.closeEntry();
+            inputStream.close();
+            throw new IOException("Error: failed to create directory\nEntry: " + parentFile);
+          }
+        }
+        inputStream.closeEntry();
+        inputStream.close();
       }
     } catch (IOException err) {
       System.out.println("An error has occurred: " + err.getMessage());

@@ -30,14 +30,14 @@ public class Encryption {
   private final String magic;
   private final String prefix;
 
-  Encryption() {
+  public Encryption() {
     this.salt = DEFAULT_SALT;
     this.saltRounds = DEFAULT_SALT_ROUNDS;
     this.magic = DEFAULT_MAGIC;
     this.prefix = DEFAULT_PREFIX;
   }
 
-  Encryption(final String salt, final int saltRounds, final String magic, final String prefix) {
+  public Encryption(final String salt, final int saltRounds, final String magic, final String prefix) {
     this.salt = salt;
     this.saltRounds = saltRounds;
     this.magic = magic;
@@ -75,7 +75,7 @@ public class Encryption {
     }
   }
 
-  protected boolean isEncrypted(final File file) {
+  public boolean isEncrypted(final File file) {
     try {
       final byte[] content = Files.readAllBytes(file.toPath());
 
@@ -90,7 +90,7 @@ public class Encryption {
     }
   }
 
-  protected boolean isPassword(final File file, final String password) {
+  public boolean isPassword(final File file, final String password) {
     try {
       final Key key = getKey(password);
       final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
@@ -130,7 +130,7 @@ public class Encryption {
     }
   }
 
-  protected void encrypt(final File file, final String password) {
+  public void encrypt(final File file, final String password) {
     try {
       final byte[] content = Files.readAllBytes(file.toPath());
       final Pair<byte[], byte[]> pair = encrypt(merge(magic.getBytes(), content), password);
@@ -158,7 +158,7 @@ public class Encryption {
     }
   }
 
-  protected void decrypt(final File file, final String password) {
+  public void decrypt(final File file, final String password) {
     try {
       final byte[] content = Files.readAllBytes(file.toPath());
       final byte[] iv = Arrays.copyOfRange(content, prefix.length(), prefix.length() + IV_LENGTH);

@@ -1,6 +1,7 @@
 package archiver.command;
 
 import archiver.config.Config;
+import archiver.encryption.Encryption;
 import archiver.format.Format;
 import archiver.format.Zip;
 import java.io.*;
@@ -45,5 +46,12 @@ public class Create extends Command {
       filesToCompress[i] = arguments[i + 1];
     }
     compressionFormat.compress(arguments[0], filesToCompress, configurations);
+
+    if (options.containsKey("p")) {
+      final Encryption encryption = new Encryption();
+      final String password = options.get("p");
+
+      encryption.encrypt(arguments[0], password);
+    }
   }
 }

@@ -12,6 +12,7 @@ public class Create extends Command {
   public void run(File[] arguments, HashMap<String, String> options) {
     if (arguments.length <= 1 || arguments[0].exists()) {
       System.out.println("Invalid input");
+      return;
     }
 
     for (int i = 1; i < arguments.length; i++) {

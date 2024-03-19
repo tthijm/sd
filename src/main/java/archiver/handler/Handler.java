@@ -52,11 +52,12 @@ public class Handler {
         extractCommand.run(argumentsArray, optionsMap);
       } else if (parsedLine.getValue0().equals("quit")) {
         System.out.println("thank you for using our file archiver, quitting program");
-        return;
+        break;
       } else {
         System.out.println("command not found");
       }
-      inputStream.close();
     } while (true);
+
+    inputStream.close();
   }
 }

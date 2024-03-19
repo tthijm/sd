@@ -47,6 +47,9 @@ public class Handler {
       if (parsedLine.getValue0().equals("create")) {
         Command createCommand = new Create();
         createCommand.run(argumentsArray, optionsMap);
+      } else if (parsedLine.getValue0().equals("extract")) {
+        Command extractCommand = new Extract();
+        extractCommand.run(argumentsArray, optionsMap);
       } else if (parsedLine.getValue0().equals("quit")) {
         System.out.println("thank you for using our file archiver, quitting program");
         return;

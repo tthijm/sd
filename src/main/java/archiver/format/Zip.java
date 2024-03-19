@@ -47,7 +47,53 @@ public class Zip extends Format {
   }
 
   @Override
-  public void decompress(File archiveName, File outputDir) {}
+  public void decompress(File archiveName, File outputDir) {
+    try {
+      //Create input stream from the archive
+      ZipInputStream inputStream = new ZipInputStream(new FileInputStream(archiveName));
+      ZipEntry entry = inputStream.getNextEntry();
+      while (entry != null) {
+        File newFile = new File(outputDir, entry.getName());
+
+        //Check for ZipSlip
+        if (!newFile.getCanonicalPath().startsWith(outputDir.getCanonicalPath() + File.separator)) {
+          inputStream.closeEntry();
+          inputStream.close();
+          throw new IOException("Error: incorrect path\nEntry: " + entry.getName());
+        }
+
+        //Check if directory exists or can be created
+        if (entry.isDirectory()) {
+          if (!newFile.isDirectory() && !newFile.mkdirs()) {
+            inputStream.closeEntry();
+            inputStream.close();
+            throw new IOException("Error: failed to create directory\nEntry: " + entry);
+          }
+        } else {
+          File parentFile = newFile.getParentFile();
+          if (!parentFile.isDirectory() && !parentFile.mkdirs()) {
+            inputStream.closeEntry();
+            inputStream.close();
+            throw new IOException("Error: failed to create directory\nEntry: " + parentFile);
+          }
+
+          //Writing to the new file
+          FileOutputStream outputStream = new FileOutputStream(newFile);
+          byte[] buf = new byte[1024];
+          int len;
+          while ((len = inputStream.read(buf)) > 0) {
+            outputStream.write(buf, 0, len);
+          }
+          outputStream.close();
+        }
+        entry = inputStream.getNextEntry();
+      }
+      inputStream.closeEntry();
+      inputStream.close();
+    } catch (IOException err) {
+      System.out.println("An error has occurred: " + err.getMessage());
+    }
+  }
 
   @Override
   public File[] getFileNames(File archiveName) {

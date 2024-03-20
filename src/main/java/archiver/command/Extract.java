@@ -2,6 +2,7 @@ package archiver.command;
 
 import archiver.encryption.Encryption;
 import archiver.format.Format;
+import archiver.format.Tar;
 import archiver.format.Zip;
 import java.io.File;
 import java.util.*;
@@ -12,6 +13,22 @@ public class Extract extends Command {
   private static final String PASSWORD_PROMPT = "Password: ";
   private static final String INCORRECT_PROMPT = "Incorrect, try again.";
   private static final String ABORT_MESSAGE = "Incorrect, aborting.";
+  private static final String ZIP_EXTENSION = ".zip";
+  private static final String TAR_EXTENSION = ".tar.gz2";
+
+  private Format getFormat(final File file) {
+    final String name = file.getName();
+
+    if (name.endsWith(ZIP_EXTENSION)) {
+      return new Zip();
+    }
+
+    if (name.endsWith(TAR_EXTENSION)) {
+      return new Tar();
+    }
+
+    return null;
+  }
 
   private String promptPassword(final File file, final Encryption encryption) {
     @SuppressWarnings("resource")
@@ -60,7 +77,7 @@ public class Extract extends Command {
   public void run(File[] args, HashMap<String, String> options) {
     final Encryption encryption = new Encryption();
     final boolean hasPassword = encryption.isEncrypted(args[0]);
-    Format fmt = new Zip();
+    Format fmt = getFormat(args[0]);
 
     if (hasPassword == true) {
       extractWithPassword(args, options, encryption, fmt);

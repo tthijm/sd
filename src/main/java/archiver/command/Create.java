@@ -3,6 +3,7 @@ package archiver.command;
 import archiver.config.Config;
 import archiver.encryption.Encryption;
 import archiver.format.Format;
+import archiver.format.Tar;
 import archiver.format.Zip;
 import java.io.*;
 import java.util.*;
@@ -24,13 +25,13 @@ public class Create extends Command {
     }
 
     Format compressionFormat;
-    if (!options.containsKey("-f")) {
+    if (!options.containsKey("f")) {
       compressionFormat = new Zip();
     } else {
-      String format = options.get("-f");
+      String format = options.get("f");
       switch (format) {
         case "tar":
-          compressionFormat = new Zip();
+          compressionFormat = new Tar();
           break;
         case "bzip2":
           compressionFormat = new Zip();

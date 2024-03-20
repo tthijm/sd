@@ -3,19 +3,36 @@ package archiver.handler;
 import archiver.command.*;
 import java.io.File;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.javatuples.*;
 
 public class Handler {
 
+  static final String OPTIONS_REGEX = "-([^ ]+) ([^ ]+) ?";
+  static final Pattern PATTERN = Pattern.compile(OPTIONS_REGEX);
+
+  protected static String[] getArguments(String line) {
+    return line.replaceAll(OPTIONS_REGEX, "").split(" ");
+  }
+
+  protected static HashMap<String, String> getOptions(String line) {
+    final Matcher matcher = PATTERN.matcher(line);
+    final Map<String, String> options = matcher.results().collect(Collectors.toMap(v -> v.group(1), v -> v.group(2)));
+
+    return new HashMap<>(options);
+  }
+
   private Triplet<String, File[], HashMap<String, String>> parse(String line) {
-    String[] splitted = line.split(" ");
+    String[] splitted = getArguments(line);
     String commandString = splitted[0];
 
     String[] arg = Arrays.copyOfRange(splitted, 1, splitted.length); //- to modify after making zip
 
     File[] arguments = toFileArray(arg);
 
-    HashMap<String, String> options = new HashMap<>();
+    HashMap<String, String> options = getOptions(line);
     return new Triplet<>(commandString, arguments, options);
   }
 

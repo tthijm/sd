@@ -36,15 +36,15 @@ public class Create extends Command {
           formatString = ".tar";
           break;
         default:
-          compressionFormat = new Zip();
-          break;
+          System.out.println("Invalid format");
+          return;
       }
     }
 
-    File checkForlder = new File(arguments[0] + formatString);
+    File checkFolder = new File(arguments[0] + formatString);
 
-    if (checkForlder.exists()) {
-      System.out.println(arguments[0].getName() + " already exists.");
+    if (checkFolder.exists()) {
+      System.out.println(checkFolder.getName() + " already exists.");
       return;
     }
 

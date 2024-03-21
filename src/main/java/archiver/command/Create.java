@@ -12,19 +12,20 @@ public class Create extends Command {
 
   @Override
   public void run(File[] arguments, HashMap<String, String> options) {
-    if (arguments.length <= 1 || arguments[0].exists()) {
-      System.out.println("Invalid input");
+    if (arguments.length <= 1) {
+      System.out.println("No files/folders to be archived provided");
       return;
     }
 
     for (int i = 1; i < arguments.length; i++) {
       if (!arguments[i].exists()) {
-        System.out.println("Invalid file" + arguments[i].getName());
+        System.out.println(arguments[i].getName() + " does not exist");
         return;
       }
     }
 
     Format compressionFormat;
+    String formatString = ".zip";
     if (!options.containsKey("f")) {
       compressionFormat = new Zip();
     } else {
@@ -32,15 +33,21 @@ public class Create extends Command {
       switch (format) {
         case "tar":
           compressionFormat = new Tar();
-          break;
-        case "bzip2":
-          compressionFormat = new Zip();
+          formatString = ".tar";
           break;
         default:
           compressionFormat = new Zip();
           break;
       }
     }
+
+    File checkForlder = new File(arguments[0] + formatString);
+
+    if (checkForlder.exists()) {
+      System.out.println(arguments[0].getName() + " already exists.");
+      return;
+    }
+
     Config configurations = new Config();
 
     File[] filesToCompress = new File[arguments.length - 1];

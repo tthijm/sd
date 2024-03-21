@@ -11,7 +11,7 @@ public class Zip extends Format {
   @Override
   public void compress(File archiveName, File[] fileNames, Config config) {
     try {
-      FileOutputStream outputFile = new FileOutputStream(archiveName);
+      FileOutputStream outputFile = new FileOutputStream(archiveName + ".zip");
       ZipOutputStream zippedOutput = new ZipOutputStream(outputFile);
 
       for (File fileName : fileNames) {

@@ -14,7 +14,7 @@ public class Extract extends Command {
   private static final String INCORRECT_PROMPT = "Incorrect, try again.";
   private static final String ABORT_MESSAGE = "Incorrect, aborting.";
   private static final String ZIP_EXTENSION = ".zip";
-  private static final String TAR_EXTENSION = ".tar.gz2";
+  private static final String TAR_EXTENSION = ".tar.bz2";
 
   private Format getFormat(final File file) {
     final String name = file.getName();

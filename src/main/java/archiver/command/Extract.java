@@ -1,5 +1,6 @@
 package archiver.command;
 
+import archiver.encryption.Encryption;
 import archiver.format.Format;
 import java.io.File;
 import java.util.*;
@@ -21,7 +22,7 @@ public class Extract extends Command {
 
       final String line = scanner.nextLine();
 
-      if (encryption.isPassword(archive, line)) {
+      if (Encryption.isPassword(archive, line)) {
         return line;
       }
 
@@ -38,7 +39,7 @@ public class Extract extends Command {
   }
 
   public void run(File[] args, HashMap<String, String> options) {
-    final boolean hasPassword = encryption.isEncrypted(args[0]);
+    final boolean hasPassword = Encryption.isEncrypted(args[0]);
     Format fmt = Format.getInstance(args[0].getName());
 
     if (hasPassword) {
@@ -49,9 +50,9 @@ public class Extract extends Command {
         return;
       }
 
-      encryption.decrypt(args[0], password);
+      Encryption.decrypt(args[0], password);
       fmt.decompress(args[0], args[1]);
-      encryption.encrypt(args[0], password);
+      Encryption.encrypt(args[0], password);
     } else {
       fmt.decompress(args[0], args[1]);
     }

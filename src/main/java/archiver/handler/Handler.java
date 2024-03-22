@@ -62,7 +62,7 @@ public class Handler {
       optionsMap = parsedLine.getValue2();
       final Command command = Command.getInstance(parsedLine.getValue0());
 
-      if (parsedLine.getValue0().equals("quit")) {
+      if (parsedLine.getValue0().equalsIgnoreCase("quit")) {
         System.out.println("thank you for using our file archiver, quitting program");
         break;
       }

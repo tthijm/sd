@@ -58,10 +58,9 @@ public class Extract extends Command {
   public void run(File[] args, HashMap<String, String> options) {
     final boolean hasPassword = encryption.isEncrypted(args[0]);
     Format fmt = getFormat(args[0]);
-    final String password;
 
     if (hasPassword) {
-      password = promptPassword(args[0]);
+      final String password = promptPassword(args[0]);
 
       if (password == null) {
         System.out.println(ABORT_MESSAGE);
@@ -69,9 +68,7 @@ public class Extract extends Command {
       }
 
       encryption.decrypt(args[0], password);
-
       fmt.decompress(args[0], args[1]);
-
       encryption.encrypt(args[0], password);
     } else {
       fmt.decompress(args[0], args[1]);

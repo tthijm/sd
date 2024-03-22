@@ -1,6 +1,5 @@
 package archiver.command;
 
-import archiver.encryption.Encryption;
 import archiver.format.Format;
 import archiver.format.Tar;
 import archiver.format.Zip;
@@ -16,8 +15,8 @@ public class Extract extends Command {
   private static final String ZIP_EXTENSION = ".zip";
   private static final String TAR_EXTENSION = ".tar.bz2";
 
-  private Format getFormat(final File file) {
-    final String name = file.getName();
+  private Format getFormat(final File archive) {
+    final String name = archive.getName();
 
     if (name.endsWith(ZIP_EXTENSION)) {
       return new Zip();
@@ -30,7 +29,7 @@ public class Extract extends Command {
     return null;
   }
 
-  private String promptPassword(final File file, final Encryption encryption) {
+  private String promptPassword(final File archive) {
     @SuppressWarnings("resource")
     final Scanner scanner = new Scanner(System.in);
     int attempt = 1;
@@ -40,7 +39,7 @@ public class Extract extends Command {
 
       final String line = scanner.nextLine();
 
-      if (encryption.isPassword(file, line) == true) {
+      if (encryption.isPassword(archive, line)) {
         return line;
       }
 
@@ -56,34 +55,23 @@ public class Extract extends Command {
     return null;
   }
 
-  private void extractWithPassword(
-    final File[] args,
-    final HashMap<String, String> options,
-    final Encryption encryption,
-    final Format format
-  ) {
-    final String password = promptPassword(args[0], encryption);
-
-    if (password == null) {
-      System.out.println(ABORT_MESSAGE);
-      return;
-    }
-
-    encryption.decrypt(args[0], password);
-    format.decompress(args[0], args[1]);
-    encryption.encrypt(args[0], password);
-  }
-
   public void run(File[] args, HashMap<String, String> options) {
-    final Encryption encryption = new Encryption();
     final boolean hasPassword = encryption.isEncrypted(args[0]);
     Format fmt = getFormat(args[0]);
 
-    if (hasPassword == true) {
-      extractWithPassword(args, options, encryption, fmt);
-      return;
-    }
+    if (hasPassword) {
+      final String password = promptPassword(args[0]);
 
-    fmt.decompress(args[0], args[1]);
+      if (password == null) {
+        System.out.println(ABORT_MESSAGE);
+        return;
+      }
+
+      encryption.decrypt(args[0], password);
+      fmt.decompress(args[0], args[1]);
+      encryption.encrypt(args[0], password);
+    } else {
+      fmt.decompress(args[0], args[1]);
+    }
   }
 }

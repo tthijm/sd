@@ -15,34 +15,15 @@ import org.javatuples.Pair;
 
 public class Encryption {
 
-  private static final String DEFAULT_SALT = "pepper";
-  private static final int DEFAULT_SALT_ROUNDS = 10;
-  private static final String DEFAULT_MAGIC = "magic bytes";
-  private static final String DEFAULT_PREFIX = "E!";
+  private static final String SALT = "pepper";
+  private static final int SALT_ROUNDS = 10;
+  private static final String MAGIC = "magic bytes";
+  private static final String PREFIX = "E!";
   private static final int PASSWORD_KEY_LENGTH = 128;
   private static final String PASSWORD_ALGORITHM = "PBKDF2WithHmacSHA256";
   private static final String ENCRYPTION_ALGORITHM = "AES";
   private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
   private static final int IV_LENGTH = 16;
-
-  private final String salt;
-  private final int saltRounds;
-  private final String magic;
-  private final String prefix;
-
-  public Encryption() {
-    this.salt = DEFAULT_SALT;
-    this.saltRounds = DEFAULT_SALT_ROUNDS;
-    this.magic = DEFAULT_MAGIC;
-    this.prefix = DEFAULT_PREFIX;
-  }
-
-  public Encryption(final String salt, final int saltRounds, final String magic, final String prefix) {
-    this.salt = salt;
-    this.saltRounds = saltRounds;
-    this.magic = magic;
-    this.prefix = prefix;
-  }
 
   protected static byte[] merge(final byte[] first, final byte[] second, final byte[]... rest) {
     if (rest.length > 0) {
@@ -56,13 +37,13 @@ public class Encryption {
     return merged;
   }
 
-  protected Key getKey(final String password) {
+  protected static Key getKey(final String password) {
     try {
       final SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(PASSWORD_ALGORITHM);
       final PBEKeySpec passwordKey = new PBEKeySpec(
         password.toCharArray(),
-        salt.getBytes(),
-        saltRounds,
+        SALT.getBytes(),
+        SALT_ROUNDS,
         PASSWORD_KEY_LENGTH
       );
       final SecretKey otherKey = secretKeyFactory.generateSecret(passwordKey);
@@ -75,13 +56,13 @@ public class Encryption {
     }
   }
 
-  public boolean isEncrypted(final File file) {
+  public static boolean isEncrypted(final File file) {
     try {
       final byte[] content = Files.readAllBytes(file.toPath());
 
       return (
-        content.length >= prefix.length() &&
-        Arrays.equals(prefix.getBytes(), Arrays.copyOfRange(content, 0, prefix.length()))
+        content.length >= PREFIX.length() &&
+        Arrays.equals(PREFIX.getBytes(), Arrays.copyOfRange(content, 0, PREFIX.length()))
       );
     } catch (final Exception e) {
       e.printStackTrace();
@@ -90,28 +71,28 @@ public class Encryption {
     }
   }
 
-  public boolean isPassword(final File file, final String password) {
+  public static boolean isPassword(final File file, final String password) {
     try {
       final Key key = getKey(password);
       final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
       final byte[] content = Files.readAllBytes(file.toPath());
-      final byte[] iv = Arrays.copyOfRange(content, prefix.length(), prefix.length() + IV_LENGTH);
-      final byte[] encrypted = Arrays.copyOfRange(content, prefix.length() + IV_LENGTH, content.length);
+      final byte[] iv = Arrays.copyOfRange(content, PREFIX.length(), PREFIX.length() + IV_LENGTH);
+      final byte[] encrypted = Arrays.copyOfRange(content, PREFIX.length() + IV_LENGTH, content.length);
 
       cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
 
       final byte[] decrypted = cipher.doFinal(encrypted);
 
       return (
-        decrypted.length >= magic.length() &&
-        Arrays.equals(magic.getBytes(), Arrays.copyOfRange(decrypted, 0, magic.length()))
+        decrypted.length >= MAGIC.length() &&
+        Arrays.equals(MAGIC.getBytes(), Arrays.copyOfRange(decrypted, 0, MAGIC.length()))
       );
     } catch (final Exception e) {
       return false;
     }
   }
 
-  protected Pair<byte[], byte[]> encrypt(final byte[] bytes, final String password) {
+  protected static Pair<byte[], byte[]> encrypt(final byte[] bytes, final String password) {
     try {
       final Key key = getKey(password);
       final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
@@ -130,20 +111,20 @@ public class Encryption {
     }
   }
 
-  public void encrypt(final File file, final String password) {
+  public static void encrypt(final File file, final String password) {
     try {
       final byte[] content = Files.readAllBytes(file.toPath());
-      final Pair<byte[], byte[]> pair = encrypt(merge(magic.getBytes(), content), password);
+      final Pair<byte[], byte[]> pair = encrypt(merge(MAGIC.getBytes(), content), password);
       final byte[] iv = pair.getValue0();
       final byte[] encrypted = pair.getValue1();
 
-      Files.write(file.toPath(), merge(prefix.getBytes(), iv, encrypted));
+      Files.write(file.toPath(), merge(PREFIX.getBytes(), iv, encrypted));
     } catch (final Exception e) {
       e.printStackTrace();
     }
   }
 
-  protected byte[] decrypt(final byte[] bytes, final String password, final byte[] iv) {
+  protected static byte[] decrypt(final byte[] bytes, final String password, final byte[] iv) {
     try {
       final Key key = getKey(password);
       final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
@@ -158,14 +139,14 @@ public class Encryption {
     }
   }
 
-  public void decrypt(final File file, final String password) {
+  public static void decrypt(final File file, final String password) {
     try {
       final byte[] content = Files.readAllBytes(file.toPath());
-      final byte[] iv = Arrays.copyOfRange(content, prefix.length(), prefix.length() + IV_LENGTH);
-      final byte[] encrypted = Arrays.copyOfRange(content, prefix.length() + IV_LENGTH, content.length);
+      final byte[] iv = Arrays.copyOfRange(content, PREFIX.length(), PREFIX.length() + IV_LENGTH);
+      final byte[] encrypted = Arrays.copyOfRange(content, PREFIX.length() + IV_LENGTH, content.length);
       final byte[] decrypted = decrypt(encrypted, password, iv);
 
-      Files.write(file.toPath(), Arrays.copyOfRange(decrypted, magic.length(), decrypted.length));
+      Files.write(file.toPath(), Arrays.copyOfRange(decrypted, MAGIC.length(), decrypted.length));
     } catch (final Exception e) {
       e.printStackTrace();
     }

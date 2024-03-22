@@ -1,6 +1,7 @@
 package archiver.command;
 
 import archiver.config.Config;
+import archiver.encryption.Encryption;
 import archiver.format.Format;
 import java.io.*;
 import java.util.*;
@@ -35,7 +36,7 @@ public class Create extends Command {
     if (options.containsKey("p")) {
       final String password = options.get("p");
 
-      encryption.encrypt(arguments[0], password);
+      Encryption.encrypt(arguments[0], password);
     }
   }
 }

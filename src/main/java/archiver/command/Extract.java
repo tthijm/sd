@@ -7,10 +7,15 @@ import java.util.*;
 
 public class Extract extends Command {
 
+  private static final String NAME = "extract";
   private static final int PASSWORD_ATTEMPTS = 3;
   private static final String PASSWORD_PROMPT = "Password: ";
   private static final String INCORRECT_PROMPT = "Incorrect, try again.";
   private static final String ABORT_MESSAGE = "Incorrect, aborting.";
+
+  public Extract() {
+    super(NAME);
+  }
 
   private String promptPassword(final File archive) {
     @SuppressWarnings("resource")

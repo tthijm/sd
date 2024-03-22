@@ -60,19 +60,19 @@ public class Handler {
       argumentsArray = parsedLine.getValue1();
 
       optionsMap = parsedLine.getValue2();
+      final Command command = Command.getInstance(parsedLine.getValue0());
 
-      if (parsedLine.getValue0().equals("create")) {
-        Command createCommand = new Create();
-        createCommand.run(argumentsArray, optionsMap);
-      } else if (parsedLine.getValue0().equals("extract")) {
-        Command extractCommand = new Extract();
-        extractCommand.run(argumentsArray, optionsMap);
-      } else if (parsedLine.getValue0().equals("quit")) {
+      if (parsedLine.getValue0().equals("quit")) {
         System.out.println("thank you for using our file archiver, quitting program");
         break;
-      } else {
-        System.out.println("command not found");
       }
+
+      if (command == null) {
+        System.out.println("command not found");
+        continue;
+      }
+
+      command.run(argumentsArray, optionsMap);
     } while (true);
 
     inputStream.close();

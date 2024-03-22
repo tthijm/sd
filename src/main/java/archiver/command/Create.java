@@ -12,20 +12,27 @@ public class Create extends Command {
 
   @Override
   public void run(File[] arguments, HashMap<String, String> options) {
-    if (arguments.length <= 1 || arguments[0].exists()) {
-      System.out.println("Invalid input");
+    if (arguments.length <= 1) {
+      System.out.println("No files/folders to be archived provided");
       return;
     }
 
     for (int i = 1; i < arguments.length; i++) {
       if (!arguments[i].exists()) {
-        System.out.println("Invalid file" + arguments[i].getName());
+        System.out.println(arguments[i].getName() + " does not exist");
         return;
       }
     }
 
     Format compressionFormat = Format.getInstance(options.getOrDefault("f", DEFAULT_FORMAT_NAME));
     Config configurations = new Config();
+
+    arguments[0] = new File(arguments[0].getName() + compressionFormat.getFileExtension());
+
+    if (arguments[0].exists()) {
+      System.out.println(arguments[0].getName() + " already exists.");
+      return;
+    }
 
     File[] filesToCompress = new File[arguments.length - 1];
     for (int i = 0; i < filesToCompress.length; i++) {

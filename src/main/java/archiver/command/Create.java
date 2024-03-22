@@ -27,7 +27,7 @@ public class Create extends Command {
     Format compressionFormat = Format.getInstance(options.getOrDefault("f", DEFAULT_FORMAT_NAME));
 
     if (compressionFormat == null) {
-      System.out.println("Wrong compression format.");
+      System.out.println("Compression format does not exist.");
       return;
     }
 

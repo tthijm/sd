@@ -15,6 +15,13 @@ import org.apache.commons.io.IOUtils;
 
 public class Tar extends Format {
 
+  private static final String NAME = "tar";
+  private static final String FILE_EXTENSION = ".tar.bz2";
+
+  public Tar() {
+    super(NAME, FILE_EXTENSION);
+  }
+
   private void addToArchive(final File file, final TarArchiveOutputStream output) {
     if (file.isDirectory()) {
       for (final File nestedFile : file.listFiles()) {

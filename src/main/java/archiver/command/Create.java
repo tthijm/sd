@@ -2,12 +2,12 @@ package archiver.command;
 
 import archiver.config.Config;
 import archiver.format.Format;
-import archiver.format.Tar;
-import archiver.format.Zip;
 import java.io.*;
 import java.util.*;
 
 public class Create extends Command {
+
+  private static final String DEFAULT_FORMAT_NAME = "zip";
 
   @Override
   public void run(File[] arguments, HashMap<String, String> options) {
@@ -23,23 +23,7 @@ public class Create extends Command {
       }
     }
 
-    Format compressionFormat;
-    if (!options.containsKey("f")) {
-      compressionFormat = new Zip();
-    } else {
-      String format = options.get("f");
-      switch (format) {
-        case "tar":
-          compressionFormat = new Tar();
-          break;
-        case "bzip2":
-          compressionFormat = new Zip();
-          break;
-        default:
-          compressionFormat = new Zip();
-          break;
-      }
-    }
+    Format compressionFormat = Format.getInstance(options.getOrDefault("f", DEFAULT_FORMAT_NAME));
     Config configurations = new Config();
 
     File[] filesToCompress = new File[arguments.length - 1];

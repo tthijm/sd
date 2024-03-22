@@ -8,6 +8,13 @@ import java.util.zip.*;
 
 public class Zip extends Format {
 
+  private static final String NAME = "zip";
+  private static final String FILE_EXTENSION = ".zip";
+
+  public Zip() {
+    super(NAME, FILE_EXTENSION);
+  }
+
   @Override
   public void compress(File archiveName, File[] fileNames, Config config) {
     try {

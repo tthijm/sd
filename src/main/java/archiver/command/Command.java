@@ -6,7 +6,7 @@ import java.util.*;
 public abstract class Command {
 
   private final String name;
-  private static final Command[] COMMANDS = { new Create(), new Extract() };
+  private static final Command[] COMMANDS = { new Create(), new Extract(), new List() };
 
   protected Command(final String name) {
     this.name = name;

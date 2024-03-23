@@ -5,6 +5,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.String;
 import java.nio.file.Files;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -97,8 +98,36 @@ public class Tar extends Format {
   }
 
   @Override
-  public File[] getFileNames(File archiveName) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getFileNames'");
+  public String[] getFileNames(File archiveName) {
+    try {
+      final InputStream fileStream = Files.newInputStream(archiveName.toPath());
+      final BufferedInputStream bufferedStream = new BufferedInputStream(fileStream);
+      final BZip2CompressorInputStream compressionStream = new BZip2CompressorInputStream(bufferedStream);
+      final TarArchiveInputStream input = new TarArchiveInputStream(compressionStream);
+
+      TarArchiveEntry entry = input.getNextEntry();
+
+      String[] result = new String[0];
+      while (entry != null) {
+        String nextFileName = entry.getName();
+
+        String[] temp = new String[result.length + 1];
+        System.arraycopy(result, 0, temp, 0, result.length);
+        temp[temp.length - 1] = nextFileName;
+
+        result = temp;
+        entry = input.getNextEntry();
+      }
+
+      input.close();
+      compressionStream.close();
+      bufferedStream.close();
+      fileStream.close();
+
+      return result;
+    } catch (final Exception e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 }

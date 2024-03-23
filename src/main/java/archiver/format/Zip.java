@@ -103,7 +103,30 @@ public class Zip extends Format {
   }
 
   @Override
-  public File[] getFileNames(File archiveName) {
-    return new File[0];
+  public String[] getFileNames(File archiveName) {
+    try {
+      //Create input stream from the archive
+      ZipInputStream inputStream = new ZipInputStream(new FileInputStream(archiveName));
+      ZipEntry entry = inputStream.getNextEntry();
+
+      String[] result = new String[0];
+      while (entry != null) {
+        String nextFileName = entry.getName();
+
+        String[] temp = new String[result.length + 1];
+        System.arraycopy(result, 0, temp, 0, result.length);
+        temp[temp.length - 1] = nextFileName;
+
+        result = temp;
+        entry = inputStream.getNextEntry();
+      }
+
+      inputStream.closeEntry();
+      inputStream.close();
+      return result;
+    } catch (final Exception e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 }

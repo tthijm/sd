@@ -3,6 +3,7 @@ package archiver.command;
 import archiver.encryption.Encryption;
 import archiver.format.Format;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class List extends Command {
@@ -46,13 +47,20 @@ public class List extends Command {
 
       Encryption.decrypt(args[0], password);
 
-      String[] fileNames = fmt.getFileNames(args[0]);
-      System.out.println(Arrays.toString(fileNames));
+      File[] files = fmt.getFiles(args[0]);
+
+      System.out.println("The following files can be found in the archive:");
+      for (int i = 0; i < files.length; i++) {
+        System.out.println((i + 1) + ". " + files[i].getName());
+      }
 
       Encryption.encrypt(args[0], password);
     } else {
-      String[] fileNames = fmt.getFileNames(args[0]);
-      System.out.println(Arrays.toString(fileNames));
+      File[] files = fmt.getFiles(args[0]);
+
+      for (int i = 0; i < files.length; i++) {
+        System.out.println((i + 1) + ". " + files[i].getName());
+      }
     }
   }
 }

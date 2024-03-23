@@ -48,17 +48,18 @@ public class List extends Command {
 
       File[] files = fmt.getFiles(args[0]);
 
-      System.out.println("The following files can be found in the archive:");
+      System.out.println("list of files in " + args[0].getName() + ":");
       for (int i = 0; i < files.length; i++) {
-        System.out.println((i + 1) + ". " + files[i].getName());
+        System.out.println((i + 1) + ". " + files[i].getPath());
       }
 
       Encryption.encrypt(args[0], password);
     } else {
       File[] files = fmt.getFiles(args[0]);
 
+      System.out.println("list of files in " + args[0].getName() + ":");
       for (int i = 0; i < files.length; i++) {
-        System.out.println((i + 1) + ". " + files[i].getName());
+        System.out.println((i + 1) + ". " + files[i].getPath());
       }
     }
   }

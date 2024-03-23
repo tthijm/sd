@@ -16,7 +16,7 @@ public abstract class Format {
 
   public static Format getInstance(final String x) {
     for (final Format format : FORMATS) {
-      if (format.getName().equals(x) || x.endsWith(format.getFileExtension())) {
+      if (format.name.equalsIgnoreCase(x) || x.endsWith(format.fileExtension)) {
         return format;
       }
     }

@@ -3,7 +3,6 @@ package archiver.command;
 import archiver.encryption.Encryption;
 import archiver.format.Format;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 public class List extends Command {

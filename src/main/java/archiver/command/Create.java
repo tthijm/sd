@@ -8,7 +8,12 @@ import java.util.*;
 
 public class Create extends Command {
 
+  private static final String NAME = "create";
   private static final String DEFAULT_FORMAT_NAME = "zip";
+
+  public Create() {
+    super(NAME);
+  }
 
   @Override
   public void run(File[] arguments, HashMap<String, String> options) {

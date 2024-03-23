@@ -35,6 +35,7 @@ public class List extends Command {
 
     final boolean hasPassword = Encryption.isEncrypted(args[0]);
     Format fmt = Format.getInstance(args[0].getName());
+    File[] files;
 
     if (hasPassword) {
       final String password = promptPassword(args[0]);
@@ -46,21 +47,15 @@ public class List extends Command {
 
       Encryption.decrypt(args[0], password);
 
-      File[] files = fmt.getFiles(args[0]);
-
-      System.out.println("list of files in " + args[0].getName() + ":");
-      for (int i = 0; i < files.length; i++) {
-        System.out.println((i + 1) + ". " + files[i].getPath());
-      }
+      files = fmt.getFiles(args[0]);
 
       Encryption.encrypt(args[0], password);
     } else {
-      File[] files = fmt.getFiles(args[0]);
-
-      System.out.println("list of files in " + args[0].getName() + ":");
-      for (int i = 0; i < files.length; i++) {
-        System.out.println((i + 1) + ". " + files[i].getPath());
-      }
+      files = fmt.getFiles(args[0]);
+    }
+    System.out.println("list of files in " + args[0].getName() + ":");
+    for (int i = 0; i < files.length; i++) {
+      System.out.println((i + 1) + ". " + files[i].getPath());
     }
   }
 }

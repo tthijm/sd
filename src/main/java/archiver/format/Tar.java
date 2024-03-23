@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.String;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -107,15 +108,9 @@ public class Tar extends Format {
 
       TarArchiveEntry entry = input.getNextEntry();
 
-      File[] result = new File[0];
+      ArrayList<File> result = new ArrayList<>();
       while (entry != null) {
-        final File nextFile = new File(entry.getName());
-
-        File[] temp = new File[result.length + 1];
-        System.arraycopy(result, 0, temp, 0, result.length);
-        temp[temp.length - 1] = nextFile;
-
-        result = temp;
+        result.add(new File(entry.getName()));
         entry = input.getNextEntry();
       }
 
@@ -124,7 +119,7 @@ public class Tar extends Format {
       bufferedStream.close();
       fileStream.close();
 
-      return result;
+      return result.toArray(new File[0]);
     } catch (final Exception e) {
       e.printStackTrace();
       return null;

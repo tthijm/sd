@@ -98,7 +98,7 @@ public class Tar extends Format {
   }
 
   @Override
-  public String[] getFileNames(File archiveName) {
+  public File[] getFiles(File archiveName) {
     try {
       final InputStream fileStream = Files.newInputStream(archiveName.toPath());
       final BufferedInputStream bufferedStream = new BufferedInputStream(fileStream);
@@ -107,13 +107,13 @@ public class Tar extends Format {
 
       TarArchiveEntry entry = input.getNextEntry();
 
-      String[] result = new String[0];
+      File[] result = new File[0];
       while (entry != null) {
-        String nextFileName = entry.getName();
+        final File nextFile = new File(entry.getName());
 
-        String[] temp = new String[result.length + 1];
+        File[] temp = new File[result.length + 1];
         System.arraycopy(result, 0, temp, 0, result.length);
-        temp[temp.length - 1] = nextFileName;
+        temp[temp.length - 1] = nextFile;
 
         result = temp;
         entry = input.getNextEntry();

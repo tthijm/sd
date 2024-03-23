@@ -36,5 +36,5 @@ public abstract class Format {
 
   public abstract void decompress(File archiveName, File outputDir);
 
-  public abstract String[] getFileNames(File archiveName);
+  public abstract File[] getFiles(File archiveName);
 }

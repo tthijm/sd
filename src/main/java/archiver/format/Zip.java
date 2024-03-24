@@ -4,6 +4,7 @@ import archiver.config.Config;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.zip.*;
 
 public class Zip extends Format {
@@ -103,7 +104,24 @@ public class Zip extends Format {
   }
 
   @Override
-  public File[] getFileNames(File archiveName) {
-    return new File[0];
+  public File[] getFiles(File archiveName) {
+    try {
+      //Create input stream from the archive
+      ZipInputStream inputStream = new ZipInputStream(new FileInputStream(archiveName));
+      ZipEntry entry = inputStream.getNextEntry();
+
+      ArrayList<File> result = new ArrayList<>();
+      while (entry != null) {
+        result.add(new File(entry.getName()));
+        entry = inputStream.getNextEntry();
+      }
+
+      inputStream.closeEntry();
+      inputStream.close();
+      return result.toArray(new File[0]);
+    } catch (final Exception e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 }

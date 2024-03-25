@@ -24,10 +24,6 @@ public abstract class Format {
     return null;
   }
 
-  public String getName() {
-    return name;
-  }
-
   public String getFileExtension() {
     return fileExtension;
   }

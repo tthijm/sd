@@ -46,9 +46,5 @@ public abstract class Command {
     return null;
   }
 
-  public String getName() {
-    return name;
-  }
-
   public abstract void run(File[] arguments, HashMap<String, String> options);
 }

@@ -59,8 +59,6 @@ public class Tar extends Format {
 
       output.finish();
       output.close();
-      compressionStream.close();
-      fileStream.close();
     } catch (final Exception e) {
       e.printStackTrace();
     }
@@ -90,9 +88,6 @@ public class Tar extends Format {
       }
 
       input.close();
-      compressionStream.close();
-      bufferedStream.close();
-      fileStream.close();
     } catch (final Exception e) {
       e.printStackTrace();
     }
@@ -115,9 +110,6 @@ public class Tar extends Format {
       }
 
       input.close();
-      compressionStream.close();
-      bufferedStream.close();
-      fileStream.close();
 
       return result.toArray(new File[0]);
     } catch (final Exception e) {

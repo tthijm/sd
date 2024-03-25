@@ -60,10 +60,10 @@ public class Create extends Command {
   private String getConfigLevel(HashMap<String, String> options) {
     if (options.containsKey("c")) {
       String val = options.get("c");
-      if (val != "none" || val != "default" || val != "high" || val != "fast") {
+      if (val.equals("none") || val.equals("default") || val.equals("high") || val.equals("fast")) {
         return val;
       } else {
-        System.out.println("Invalid compression level. Using default settings.\n");
+        System.out.println("Invalid compression level. Using default settings.");
       }
     }
     return "default";

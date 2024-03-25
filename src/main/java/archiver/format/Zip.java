@@ -1,26 +1,40 @@
 package archiver.format;
 
-import archiver.config.Config;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.*;
 
 public class Zip extends Format {
 
   private static final String NAME = "zip";
   private static final String FILE_EXTENSION = ".zip";
+  private static final HashMap<String, Integer> CONFIGURATION = new HashMap<String, Integer>(
+    Map.of(
+      "none",
+      Deflater.NO_COMPRESSION,
+      "default",
+      Deflater.DEFAULT_COMPRESSION,
+      "high",
+      Deflater.BEST_COMPRESSION,
+      "fast",
+      Deflater.BEST_SPEED
+    )
+  );
 
   public Zip() {
     super(NAME, FILE_EXTENSION);
   }
 
   @Override
-  public void compress(File archiveName, File[] fileNames, Config config) {
+  public void compress(File archiveName, File[] fileNames, String config) {
     try {
       FileOutputStream outputFile = new FileOutputStream(archiveName);
       ZipOutputStream zippedOutput = new ZipOutputStream(outputFile);
+      zippedOutput.setLevel(CONFIGURATION.get(config));
 
       for (File fileName : fileNames) {
         add(fileName, zippedOutput);

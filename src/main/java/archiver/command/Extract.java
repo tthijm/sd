@@ -21,6 +21,11 @@ public class Extract extends Command {
       return;
     }
 
+    if (!args[0].exists()) {
+      System.out.println("The given archive does not exist. Please provide an existing archive.");
+      return;
+    }
+
     final boolean hasPassword = Encryption.isEncrypted(args[0]);
     Format fmt = Format.getInstance(args[0].getName());
 

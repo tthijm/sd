@@ -24,6 +24,14 @@ public abstract class Format {
     return null;
   }
 
+  public static Format[] getFormats() {
+    return FORMATS.clone();
+  }
+
+  public String getName() {
+    return name;
+  }
+
   public String getFileExtension() {
     return fileExtension;
   }

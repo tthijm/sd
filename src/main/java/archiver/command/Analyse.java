@@ -57,7 +57,7 @@ public class Analyse extends Command {
       final String name = format.getName();
       final Instant before = Instant.now();
 
-      format.compress(tempFile, arguments, null);
+      format.compress(tempFile, arguments, Create.DEFAULT_LEVEL);
 
       final Instant after = Instant.now();
       final long size = tempFile.length();

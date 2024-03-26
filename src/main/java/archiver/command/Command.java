@@ -11,7 +11,7 @@ public abstract class Command {
   private static final String INCORRECT_PROMPT = "Incorrect, try again.";
   protected static final String ABORT_MESSAGE = "Incorrect, aborting.";
   private final String name;
-  private static final Command[] COMMANDS = { new Create(), new Extract(), new List() };
+  private static final Command[] COMMANDS = { new Create(), new Extract(), new List(), new Analyse() };
 
   protected Command(final String name) {
     this.name = name;

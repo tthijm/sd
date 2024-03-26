@@ -19,7 +19,7 @@ public class Analyse extends Command {
   private static final Object[] LABELS = { "name", "size", "reduction", "duration" };
   private static final String HEADER = String.format(ROW_FORMAT, LABELS);
 
-  public Analyse() {
+  protected Analyse() {
     super(NAME);
   }
 

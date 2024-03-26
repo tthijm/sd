@@ -1,5 +1,6 @@
 package archiver.format;
 
+import archiver.level.*;
 import java.io.*;
 
 public abstract class Format {
@@ -27,7 +28,7 @@ public abstract class Format {
     return fileExtension;
   }
 
-  public abstract void compress(File archiveName, File[] fileNames, String config);
+  public abstract void compress(File archiveName, File[] fileNames, Level config);
 
   public abstract void decompress(File archiveName, File outputDir);
 

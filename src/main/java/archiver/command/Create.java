@@ -2,6 +2,7 @@ package archiver.command;
 
 import archiver.encryption.Encryption;
 import archiver.format.Format;
+import archiver.level.*;
 import java.io.*;
 import java.util.*;
 
@@ -35,7 +36,7 @@ public class Create extends Command {
       return;
     }
 
-    String config = getConfigLevel(options);
+    Level config = getConfigLevel(options.getOrDefault("c", "default"));
 
     arguments[0] = new File(arguments[0].getName() + compressionFormat.getFileExtension());
 
@@ -57,15 +58,14 @@ public class Create extends Command {
     }
   }
 
-  private String getConfigLevel(HashMap<String, String> options) {
-    if (options.containsKey("c")) {
-      String val = options.get("c");
-      if (val.equals("none") || val.equals("default") || val.equals("high") || val.equals("fast")) {
-        return val;
-      } else {
+  private Level getConfigLevel(String val) {
+    if (val.equals("none") || val.equals("low") || val.equals("medium") || val.equals("high")) {
+      return Level.valueOf(val);
+    } else {
+      if (!val.equals("default")) {
         System.out.println("Invalid compression level. Using default settings.");
       }
     }
-    return "default";
+    return Level.defaultValue;
   }
 }

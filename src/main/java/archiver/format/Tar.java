@@ -1,6 +1,6 @@
 package archiver.format;
 
-import archiver.config.Config;
+import archiver.level.*;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -76,7 +76,7 @@ public class Tar extends Format {
   }
 
   @Override
-  public void compress(final File archiveName, final File[] fileNames, final Config config) {
+  public void compress(final File archiveName, final File[] fileNames, final Level config) {
     try {
       final TarArchiveOutputStream output = getOuputStream(archiveName);
 

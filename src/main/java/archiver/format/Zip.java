@@ -22,9 +22,7 @@ public class Zip extends Format {
       Level.medium,
       5,
       Level.high,
-      Deflater.BEST_COMPRESSION,
-      Level.defaultValue,
-      Deflater.DEFAULT_COMPRESSION
+      Deflater.BEST_COMPRESSION
     )
   );
 

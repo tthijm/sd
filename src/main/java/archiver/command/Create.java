@@ -36,7 +36,7 @@ public class Create extends Command {
       return;
     }
 
-    Level config = getConfigLevel(options.getOrDefault("c", "default"));
+    Level config = getConfigLevel(options.getOrDefault("c", "medium"));
 
     arguments[0] = new File(arguments[0].getName() + compressionFormat.getFileExtension());
 
@@ -62,10 +62,8 @@ public class Create extends Command {
     if (val.equals("none") || val.equals("low") || val.equals("medium") || val.equals("high")) {
       return Level.valueOf(val);
     } else {
-      if (!val.equals("default")) {
-        System.out.println("Invalid compression level. Using default settings.");
-      }
+      System.out.println("Invalid compression level. Using default settings.");
     }
-    return Level.defaultValue;
+    return Level.medium;
   }
 }

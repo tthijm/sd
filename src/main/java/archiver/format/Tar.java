@@ -1,6 +1,6 @@
 package archiver.format;
 
-import archiver.config.Config;
+import archiver.level.*;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -22,6 +22,35 @@ public class Tar extends Format {
 
   protected Tar() {
     super(NAME, FILE_EXTENSION);
+  }
+
+  private TarArchiveInputStream getInputStream(final File archive) {
+    try {
+      final InputStream fileStream = Files.newInputStream(archive.toPath());
+      final BufferedInputStream bufferedStream = new BufferedInputStream(fileStream);
+      final BZip2CompressorInputStream compressionStream = new BZip2CompressorInputStream(bufferedStream);
+      final TarArchiveInputStream input = new TarArchiveInputStream(compressionStream);
+
+      return input;
+    } catch (final Exception e) {
+      e.printStackTrace();
+
+      return null;
+    }
+  }
+
+  private TarArchiveOutputStream getOuputStream(final File archive) {
+    try {
+      final OutputStream fileStream = Files.newOutputStream(archive.toPath());
+      final BZip2CompressorOutputStream compressionStream = new BZip2CompressorOutputStream(fileStream);
+      final TarArchiveOutputStream output = new TarArchiveOutputStream(compressionStream);
+
+      return output;
+    } catch (final Exception e) {
+      e.printStackTrace();
+
+      return null;
+    }
   }
 
   private void addToArchive(final File file, final TarArchiveOutputStream output) {
@@ -47,11 +76,9 @@ public class Tar extends Format {
   }
 
   @Override
-  public void compress(final File archiveName, final File[] fileNames, final Config config) {
+  public void compress(final File archiveName, final File[] fileNames, final Level config) {
     try {
-      final OutputStream fileStream = Files.newOutputStream(archiveName.toPath());
-      final BZip2CompressorOutputStream compressionStream = new BZip2CompressorOutputStream(fileStream);
-      final TarArchiveOutputStream output = new TarArchiveOutputStream(compressionStream);
+      final TarArchiveOutputStream output = getOuputStream(archiveName);
 
       for (final File file : fileNames) {
         addToArchive(file, output);
@@ -59,8 +86,6 @@ public class Tar extends Format {
 
       output.finish();
       output.close();
-      compressionStream.close();
-      fileStream.close();
     } catch (final Exception e) {
       e.printStackTrace();
     }
@@ -69,10 +94,7 @@ public class Tar extends Format {
   @Override
   public void decompress(final File archiveName, final File outputDir) {
     try {
-      final InputStream fileStream = Files.newInputStream(archiveName.toPath());
-      final BufferedInputStream bufferedStream = new BufferedInputStream(fileStream);
-      final BZip2CompressorInputStream compressionStream = new BZip2CompressorInputStream(bufferedStream);
-      final TarArchiveInputStream input = new TarArchiveInputStream(compressionStream);
+      final TarArchiveInputStream input = getInputStream(archiveName);
 
       TarArchiveEntry entry = input.getNextEntry();
 
@@ -90,9 +112,6 @@ public class Tar extends Format {
       }
 
       input.close();
-      compressionStream.close();
-      bufferedStream.close();
-      fileStream.close();
     } catch (final Exception e) {
       e.printStackTrace();
     }
@@ -101,10 +120,7 @@ public class Tar extends Format {
   @Override
   public File[] getFiles(File archiveName) {
     try {
-      final InputStream fileStream = Files.newInputStream(archiveName.toPath());
-      final BufferedInputStream bufferedStream = new BufferedInputStream(fileStream);
-      final BZip2CompressorInputStream compressionStream = new BZip2CompressorInputStream(bufferedStream);
-      final TarArchiveInputStream input = new TarArchiveInputStream(compressionStream);
+      final TarArchiveInputStream input = getInputStream(archiveName);
 
       TarArchiveEntry entry = input.getNextEntry();
 
@@ -115,9 +131,6 @@ public class Tar extends Format {
       }
 
       input.close();
-      compressionStream.close();
-      bufferedStream.close();
-      fileStream.close();
 
       return result.toArray(new File[0]);
     } catch (final Exception e) {

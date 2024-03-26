@@ -1,6 +1,6 @@
 package archiver.format;
 
-import archiver.config.Config;
+import archiver.level.*;
 import java.io.*;
 
 public abstract class Format {
@@ -24,11 +24,19 @@ public abstract class Format {
     return null;
   }
 
+  public static Format[] getFormats() {
+    return FORMATS.clone();
+  }
+
+  public String getName() {
+    return name;
+  }
+
   public String getFileExtension() {
     return fileExtension;
   }
 
-  public abstract void compress(File archiveName, File[] fileNames, Config config);
+  public abstract void compress(File archiveName, File[] fileNames, Level config);
 
   public abstract void decompress(File archiveName, File outputDir);
 

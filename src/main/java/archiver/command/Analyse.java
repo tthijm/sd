@@ -15,7 +15,7 @@ public class Analyse extends Command {
   private static final String NAME = "analyse";
   private static final String NOT_FOUND_FORMAT = "%s does not exist\n";
   private static final String ROW_FORMAT = "%-10s %-10s %-10s %-10s\n";
-  private static final String RECOMMEND_FORMAT = "\nIt is recommended to use %s.\n";
+  private static final String RECOMMEND_FORMAT = "\nBased on size reduction, it is recommended to use %s.\n";
   private static final Object[] LABELS = { "name", "size", "reduction", "duration" };
   private static final String HEADER = String.format(ROW_FORMAT, LABELS);
 

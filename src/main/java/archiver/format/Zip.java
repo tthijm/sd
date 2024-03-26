@@ -13,6 +13,7 @@ public class Zip extends Format {
 
   private static final String NAME = "zip";
   private static final String FILE_EXTENSION = ".zip";
+  private static final int MEDIUM_COMPRESSION = 5;
   private static final HashMap<Level, Integer> CONFIGURATION = new HashMap<Level, Integer>(
     Map.of(
       Level.none,
@@ -20,7 +21,7 @@ public class Zip extends Format {
       Level.low,
       Deflater.BEST_SPEED,
       Level.medium,
-      5,
+      MEDIUM_COMPRESSION,
       Level.high,
       Deflater.BEST_COMPRESSION
     )

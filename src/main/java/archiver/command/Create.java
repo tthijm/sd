@@ -12,7 +12,7 @@ public class Create extends Command {
   private static final String DEFAULT_FORMAT_NAME = "zip";
   public static final Level DEFAULT_LEVEL = Level.medium;
 
-  public Create() {
+  protected Create() {
     super(NAME);
   }
 

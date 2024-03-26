@@ -20,7 +20,7 @@ public class Tar extends Format {
   private static final String NAME = "tar";
   private static final String FILE_EXTENSION = ".tar.bz2";
 
-  public Tar() {
+  protected Tar() {
     super(NAME, FILE_EXTENSION);
   }
 

@@ -27,7 +27,7 @@ public class Zip extends Format {
     )
   );
 
-  public Zip() {
+  protected Zip() {
     super(NAME, FILE_EXTENSION);
   }
 

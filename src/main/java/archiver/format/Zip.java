@@ -12,7 +12,7 @@ public class Zip extends Format {
   private static final String NAME = "zip";
   private static final String FILE_EXTENSION = ".zip";
 
-  public Zip() {
+  protected Zip() {
     super(NAME, FILE_EXTENSION);
   }
 

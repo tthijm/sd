@@ -9,7 +9,7 @@ public class List extends Command {
 
   private static final String NAME = "list";
 
-  public List() {
+  protected List() {
     super(NAME);
   }
 

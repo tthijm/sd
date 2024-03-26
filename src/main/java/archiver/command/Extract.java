@@ -9,7 +9,7 @@ public class Extract extends Command {
 
   private static final String NAME = "extract";
 
-  public Extract() {
+  protected Extract() {
     super(NAME);
   }
 

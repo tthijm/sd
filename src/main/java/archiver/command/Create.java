@@ -11,7 +11,7 @@ public class Create extends Command {
   private static final String NAME = "create";
   private static final String DEFAULT_FORMAT_NAME = "zip";
 
-  public Create() {
+  protected Create() {
     super(NAME);
   }
 

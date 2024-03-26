@@ -35,6 +35,10 @@ public class Extract extends Command {
     }
 
     File outputDir = args.length > 1 ? args[1] : new File(args[0].getName().replace(fmt.getFileExtension(), ""));
+    if (outputDir.exists()) {
+      System.out.println("The given destination already exists.");
+      return;
+    }
 
     if (hasPassword) {
       final String password = promptPassword(args[0]);

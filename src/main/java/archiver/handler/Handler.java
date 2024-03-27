@@ -10,8 +10,15 @@ import org.javatuples.*;
 
 public class Handler {
 
+  private static final Handler instance = new Handler();
   static final String OPTIONS_REGEX = "-([^ ]+) ([^ ]+) ?";
   static final Pattern PATTERN = Pattern.compile(OPTIONS_REGEX);
+
+  private Handler() {}
+
+  public static Handler getInstance() {
+    return instance;
+  }
 
   protected static String[] getArguments(String line) {
     return line.replaceAll(OPTIONS_REGEX, "").split(" ");

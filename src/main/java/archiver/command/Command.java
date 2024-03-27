@@ -46,5 +46,5 @@ public abstract class Command {
     return null;
   }
 
-  public abstract void run(File[] arguments, HashMap<String, String> options);
+  public abstract void execute(File[] arguments, HashMap<String, String> options);
 }

@@ -72,7 +72,7 @@ public class Handler {
         continue;
       }
 
-      command.run(argumentsArray, optionsMap);
+      command.execute(argumentsArray, optionsMap);
     } while (true);
 
     inputStream.close();

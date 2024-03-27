@@ -8,6 +8,7 @@ import java.util.*;
 public class List extends Command {
 
   private static final String NAME = "list";
+  private static final String NOT_SUPPORTED_FORMAT = "%s is not in a supported format\n";
 
   protected List() {
     super(NAME);
@@ -25,17 +26,14 @@ public class List extends Command {
       return;
     }
 
-    // TODO: input validation for providing options
-    //        if (options == null) {
-    //            System.out.println("Invalid input, no options available");
-    //            return;
-    //        }
-
-    //TODO: checking for if the format existst in the format package
-
     final boolean hasPassword = Encryption.isEncrypted(args[0]);
     Format fmt = Format.getInstance(args[0].getName());
     File[] files;
+
+    if (fmt == null) {
+      System.out.printf(NOT_SUPPORTED_FORMAT, args[0].getName());
+      return;
+    }
 
     if (hasPassword) {
       final String password = promptPassword(args[0]);

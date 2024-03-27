@@ -2,8 +2,9 @@ package archiver.format;
 
 import archiver.level.*;
 import java.io.*;
+import java.util.ArrayList;
 
-public abstract class Format {
+public abstract class Format implements Cloneable {
 
   private final String name;
   private final String fileExtension;
@@ -25,7 +26,17 @@ public abstract class Format {
   }
 
   public static Format[] getFormats() {
-    return FORMATS.clone();
+    final ArrayList<Format> result = new ArrayList<>();
+
+    for (final Format format : FORMATS) {
+      try {
+        result.add((Format) format.clone());
+      } catch (final Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    return result.toArray(Format[]::new);
   }
 
   public String getName() {

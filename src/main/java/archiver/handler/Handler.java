@@ -11,8 +11,8 @@ import org.javatuples.*;
 public class Handler {
 
   private static final Handler instance = new Handler();
-  static final String OPTIONS_REGEX = "-([^ ]+) ([^ ]+) ?";
-  static final Pattern PATTERN = Pattern.compile(OPTIONS_REGEX);
+  private static final String OPTIONS_REGEX = "-([^ ]+) ([^ ]+) ?";
+  private static final Pattern PATTERN = Pattern.compile(OPTIONS_REGEX);
 
   private Handler() {}
 

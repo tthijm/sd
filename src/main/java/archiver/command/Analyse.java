@@ -18,6 +18,7 @@ public class Analyse extends Command {
   private static final String RECOMMEND_FORMAT = "\nBased on size reduction, it is recommended to use %s.\n";
   private static final Object[] LABELS = { "name", "size", "reduction", "duration" };
   private static final String HEADER = String.format(ROW_FORMAT, LABELS);
+  private static final Format[] FORMATS = Format.getFormats();
 
   protected Analyse() {
     super(NAME);
@@ -45,7 +46,6 @@ public class Analyse extends Command {
       }
     }
 
-    final Format[] formats = Format.getFormats();
     final File tempFile = getTempFile();
     final long totalSize = getTotalSize(arguments);
 
@@ -53,7 +53,7 @@ public class Analyse extends Command {
 
     System.out.print(HEADER);
 
-    for (final Format format : formats) {
+    for (final Format format : FORMATS) {
       final String name = format.getName();
       final Instant before = Instant.now();
 

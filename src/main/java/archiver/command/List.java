@@ -8,7 +8,6 @@ import java.util.*;
 public class List extends Command {
 
   private static final String NAME = "list";
-  private static final String NOT_SUPPORTED_FORMAT = "%s is not in a supported format\n";
 
   protected List() {
     super(NAME);
@@ -35,7 +34,7 @@ public class List extends Command {
     File[] files;
 
     if (fmt == null) {
-      System.out.printf(NOT_SUPPORTED_FORMAT, arguments[0].getName());
+      System.out.println("Invalid format. Please provide a file with a valid extension.");
       return;
     }
 

@@ -1,6 +1,6 @@
 package archiver.format;
 
-import archiver.level.*;
+import archiver.config.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;

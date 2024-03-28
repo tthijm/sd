@@ -19,7 +19,7 @@ public class Encryption {
   private static final SecureRandom RANDOM = new SecureRandom();
   private static final int SALT_LENGTH = 8;
   private static final int SALT_ROUNDS = 10000;
-  private static final String MAGIC = "magic bytes";
+  private static final String MAGIC_BYTES = "magic bytes";
   private static final String PREFIX = "E!";
   private static final int PASSWORD_KEY_LENGTH = 128;
   private static final String PASSWORD_ALGORITHM = "PBKDF2WithHmacSHA256";
@@ -94,8 +94,8 @@ public class Encryption {
       final byte[] decrypted = cipher.doFinal(encrypted);
 
       return (
-        decrypted.length >= MAGIC.length() &&
-        Arrays.equals(MAGIC.getBytes(), Arrays.copyOfRange(decrypted, 0, MAGIC.length()))
+        decrypted.length >= MAGIC_BYTES.length() &&
+        Arrays.equals(MAGIC_BYTES.getBytes(), Arrays.copyOfRange(decrypted, 0, MAGIC_BYTES.length()))
       );
     } catch (final Exception e) {
       return false;
@@ -125,7 +125,7 @@ public class Encryption {
     try {
       final byte[] content = Files.readAllBytes(file.toPath());
       final byte[] salt = getRandomSalt();
-      final Pair<byte[], byte[]> pair = encrypt(merge(MAGIC.getBytes(), content), password, salt);
+      final Pair<byte[], byte[]> pair = encrypt(merge(MAGIC_BYTES.getBytes(), content), password, salt);
       final byte[] iv = pair.getValue0();
       final byte[] encrypted = pair.getValue1();
 
@@ -162,7 +162,7 @@ public class Encryption {
       final byte[] encrypted = Arrays.copyOfRange(content, PREFIX.length() + SALT_LENGTH + IV_LENGTH, content.length);
       final byte[] decrypted = decrypt(encrypted, password, salt, iv);
 
-      Files.write(file.toPath(), Arrays.copyOfRange(decrypted, MAGIC.length(), decrypted.length));
+      Files.write(file.toPath(), Arrays.copyOfRange(decrypted, MAGIC_BYTES.length(), decrypted.length));
     } catch (final Exception e) {
       e.printStackTrace();
     }

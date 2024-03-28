@@ -1,4 +1,4 @@
-package archiver.level;
+package archiver.config;
 
 public enum Level {
   none,

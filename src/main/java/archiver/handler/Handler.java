@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.javatuples.*;
 
 public class Handler {
@@ -32,12 +33,7 @@ public class Handler {
   }
 
   private File[] toFileArray(String[] fileStrings) {
-    File[] files = new File[fileStrings.length];
-    for (int i = 0; i < fileStrings.length; i++) {
-      File file = new File(fileStrings[i]);
-      files[i] = file;
-    }
-    return files;
+    return Stream.of(fileStrings).map(v -> new File(v)).toArray(File[]::new);
   }
 
   private Triplet<String, File[], HashMap<String, String>> parse(String line) {

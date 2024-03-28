@@ -17,10 +17,11 @@ public class Create extends Command {
   }
 
   private Level getConfigLevel(String val) {
-    if (val.equals("none") || val.equals("low") || val.equals("medium") || val.equals("high")) {
+    try {
       return Level.valueOf(val);
+    } catch (final Exception e) {
+      return null;
     }
-    return null;
   }
 
   @Override
@@ -57,11 +58,7 @@ public class Create extends Command {
       return;
     }
 
-    File[] filesToCompress = new File[arguments.length - 1];
-    for (int i = 0; i < filesToCompress.length; i++) {
-      filesToCompress[i] = arguments[i + 1];
-    }
-    compressionFormat.compress(arguments[0], filesToCompress, config);
+    compressionFormat.compress(arguments[0], Arrays.copyOfRange(arguments, 1, arguments.length), config);
 
     if (options.containsKey("p")) {
       final String password = options.get("p");

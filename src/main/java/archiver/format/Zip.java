@@ -35,11 +35,11 @@ public class Zip extends Format {
     );
   }
 
-  private void add(File file, ZipOutputStream output) {
+  private void addToArchive(File file, ZipOutputStream output) {
     try {
       if (file.isDirectory()) {
         for (File nestedFile : file.listFiles()) {
-          add(nestedFile, output);
+          addToArchive(nestedFile, output);
         }
       } else {
         FileInputStream fInput = new FileInputStream(file);
@@ -65,7 +65,7 @@ public class Zip extends Format {
       zippedOutput.setLevel(CONFIGURATION.get(config));
 
       for (File fileName : fileNames) {
-        add(fileName, zippedOutput);
+        addToArchive(fileName, zippedOutput);
       }
 
       zippedOutput.close();

@@ -6,18 +6,19 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.javatuples.*;
 
 public class Handler {
 
-  private static final Handler instance = new Handler();
+  private static final Handler INSTANCE = new Handler();
   private static final String OPTIONS_REGEX = "-([^ ]+) ([^ ]+) ?";
   private static final Pattern PATTERN = Pattern.compile(OPTIONS_REGEX);
 
   private Handler() {}
 
   public static Handler getInstance() {
-    return instance;
+    return INSTANCE;
   }
 
   protected static String[] getArguments(String line) {
@@ -31,42 +32,28 @@ public class Handler {
     return new HashMap<>(options);
   }
 
-  private Triplet<String, File[], HashMap<String, String>> parse(String line) {
-    String[] splitted = getArguments(line);
-    String commandString = splitted[0];
-
-    String[] arg = Arrays.copyOfRange(splitted, 1, splitted.length); //- to modify after making zip
-
-    File[] arguments = toFileArray(arg);
-
-    HashMap<String, String> options = getOptions(line);
-    return new Triplet<>(commandString, arguments, options);
+  private File[] toFileArray(String[] fileStrings) {
+    return Stream.of(fileStrings).map(v -> new File(v)).toArray(File[]::new);
   }
 
-  private File[] toFileArray(String[] fileStrings) {
-    File[] files = new File[fileStrings.length];
-    for (int i = 0; i < fileStrings.length; i++) {
-      File file = new File(fileStrings[i]);
-      files[i] = file;
-    }
-    return files;
+  private Triplet<String, File[], HashMap<String, String>> parse(String line) {
+    String[] splitted = getArguments(line);
+    File[] arguments = toFileArray(Arrays.copyOfRange(splitted, 1, splitted.length));
+    HashMap<String, String> options = getOptions(line);
+
+    return new Triplet<>(splitted[0], arguments, options);
   }
 
   public void loop() {
     Scanner inputStream = new Scanner(System.in);
-    String input;
-    Triplet<String, File[], HashMap<String, String>> parsedLine;
-    File[] argumentsArray;
-    HashMap<String, String> optionsMap;
 
     do {
       System.out.println("type next command:");
 
-      input = inputStream.nextLine(); //"create has.zip testFolder";
-      parsedLine = parse(input);
-      argumentsArray = parsedLine.getValue1();
-
-      optionsMap = parsedLine.getValue2();
+      String input = inputStream.nextLine();
+      Triplet<String, File[], HashMap<String, String>> parsedLine = parse(input);
+      File[] argumentsArray = parsedLine.getValue1();
+      HashMap<String, String> optionsMap = parsedLine.getValue2();
       final Command command = Command.getInstance(parsedLine.getValue0());
 
       if (parsedLine.getValue0().equalsIgnoreCase("quit")) {

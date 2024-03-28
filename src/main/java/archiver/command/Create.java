@@ -1,8 +1,8 @@
 package archiver.command;
 
+import archiver.config.*;
 import archiver.encryption.Encryption;
 import archiver.format.Format;
-import archiver.level.*;
 import java.io.*;
 import java.util.*;
 
@@ -16,8 +16,19 @@ public class Create extends Command {
     super(NAME);
   }
 
+  private Level getConfigLevel(String val) {
+    try {
+      return Level.valueOf(val);
+    } catch (final Exception e) {
+      return null;
+    }
+  }
+
   @Override
   public void execute(File[] arguments, HashMap<String, String> options) {
+    Format compressionFormat = Format.getInstance(options.getOrDefault("f", DEFAULT_FORMAT_NAME));
+    Level config = getConfigLevel(options.getOrDefault("c", "medium"));
+
     if (arguments.length <= 1) {
       System.out.println("No files/folders to be archived provided");
       return;
@@ -30,14 +41,11 @@ public class Create extends Command {
       }
     }
 
-    Format compressionFormat = Format.getInstance(options.getOrDefault("f", DEFAULT_FORMAT_NAME));
-
     if (compressionFormat == null) {
       System.out.println("Compression format does not exist.");
       return;
     }
 
-    Level config = getConfigLevel(options.getOrDefault("c", "medium"));
     if (config == null) {
       System.out.println("Invalid compression level.");
       return;
@@ -50,23 +58,10 @@ public class Create extends Command {
       return;
     }
 
-    File[] filesToCompress = new File[arguments.length - 1];
-    for (int i = 0; i < filesToCompress.length; i++) {
-      filesToCompress[i] = arguments[i + 1];
-    }
-    compressionFormat.compress(arguments[0], filesToCompress, config);
+    compressionFormat.compress(arguments[0], Arrays.copyOfRange(arguments, 1, arguments.length), config);
 
     if (options.containsKey("p")) {
-      final String password = options.get("p");
-
-      Encryption.encrypt(arguments[0], password);
+      Encryption.encrypt(arguments[0], options.get("p"));
     }
-  }
-
-  private Level getConfigLevel(String val) {
-    if (val.equals("none") || val.equals("low") || val.equals("medium") || val.equals("high")) {
-      return Level.valueOf(val);
-    }
-    return null;
   }
 }

@@ -1,6 +1,6 @@
 package archiver.format;
 
-import archiver.level.*;
+import archiver.config.*;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -121,12 +121,12 @@ public class Tar extends Format {
   public File[] getFiles(File archiveName) {
     try {
       final TarArchiveInputStream input = getInputStream(archiveName);
-
+      ArrayList<File> result = new ArrayList<>();
       TarArchiveEntry entry = input.getNextEntry();
 
-      ArrayList<File> result = new ArrayList<>();
       while (entry != null) {
         result.add(new File(entry.getName()));
+
         entry = input.getNextEntry();
       }
 

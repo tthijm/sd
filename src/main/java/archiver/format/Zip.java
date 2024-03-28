@@ -1,6 +1,6 @@
 package archiver.format;
 
-import archiver.level.*;
+import archiver.config.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,54 +14,40 @@ public class Zip extends Format {
   private static final String NAME = "zip";
   private static final String FILE_EXTENSION = ".zip";
   private static final int MEDIUM_COMPRESSION = 5;
-  private static final HashMap<Level, Integer> CONFIGURATION = new HashMap<Level, Integer>(
-    Map.of(
-      Level.none,
-      Deflater.NO_COMPRESSION,
-      Level.low,
-      Deflater.BEST_SPEED,
-      Level.medium,
-      MEDIUM_COMPRESSION,
-      Level.high,
-      Deflater.BEST_COMPRESSION
-    )
-  );
+  private static final HashMap<Level, Integer> CONFIGURATION = getConfiguration();
 
   protected Zip() {
     super(NAME, FILE_EXTENSION);
   }
 
-  @Override
-  public void compress(File archiveName, File[] fileNames, Level config) {
-    try {
-      FileOutputStream outputFile = new FileOutputStream(archiveName);
-      ZipOutputStream zippedOutput = new ZipOutputStream(outputFile);
-      zippedOutput.setLevel(CONFIGURATION.get(config));
-
-      for (File fileName : fileNames) {
-        add(fileName, zippedOutput);
-      }
-      zippedOutput.close();
-      outputFile.close();
-    } catch (IOException exception) {
-      System.out.println(exception);
-    }
+  private static HashMap<Level, Integer> getConfiguration() {
+    return new HashMap<Level, Integer>(
+      Map.of(
+        Level.none,
+        Deflater.NO_COMPRESSION,
+        Level.low,
+        Deflater.BEST_SPEED,
+        Level.medium,
+        MEDIUM_COMPRESSION,
+        Level.high,
+        Deflater.BEST_COMPRESSION
+      )
+    );
   }
 
-  private void add(File file, ZipOutputStream output) {
+  private void addToArchive(File file, ZipOutputStream output) {
     try {
       if (file.isDirectory()) {
         for (File nestedFile : file.listFiles()) {
-          add(nestedFile, output);
+          addToArchive(nestedFile, output);
         }
       } else {
         FileInputStream fInput = new FileInputStream(file);
         ZipEntry zipEntry = new ZipEntry(file.getPath());
-        output.putNextEntry(zipEntry);
-
         byte[] fileNumBytes = Files.readAllBytes(Paths.get(file.getPath()));
-        output.write(fileNumBytes, 0, fileNumBytes.length);
 
+        output.putNextEntry(zipEntry);
+        output.write(fileNumBytes, 0, fileNumBytes.length);
         fInput.close();
         output.closeEntry();
       }
@@ -71,11 +57,30 @@ public class Zip extends Format {
   }
 
   @Override
+  public void compress(File archiveName, File[] fileNames, Level config) {
+    try {
+      FileOutputStream outputFile = new FileOutputStream(archiveName);
+      ZipOutputStream zippedOutput = new ZipOutputStream(outputFile);
+
+      zippedOutput.setLevel(CONFIGURATION.get(config));
+
+      for (File fileName : fileNames) {
+        addToArchive(fileName, zippedOutput);
+      }
+
+      zippedOutput.close();
+      outputFile.close();
+    } catch (IOException exception) {
+      System.out.println(exception);
+    }
+  }
+
+  @Override
   public void decompress(File archiveName, File outputDir) {
     try {
-      //Create input stream from the archive
       ZipInputStream inputStream = new ZipInputStream(new FileInputStream(archiveName));
       ZipEntry entry = inputStream.getNextEntry();
+
       while (entry != null) {
         File newFile = new File(outputDir, entry.getName());
 
@@ -86,7 +91,6 @@ public class Zip extends Format {
           throw new IOException("Error: incorrect path\nEntry: " + entry.getName());
         }
 
-        //Check if directory exists or can be created
         if (entry.isDirectory()) {
           if (!newFile.isDirectory() && !newFile.mkdirs()) {
             inputStream.closeEntry();
@@ -95,23 +99,27 @@ public class Zip extends Format {
           }
         } else {
           File parentFile = newFile.getParentFile();
+
           if (!parentFile.isDirectory() && !parentFile.mkdirs()) {
             inputStream.closeEntry();
             inputStream.close();
             throw new IOException("Error: failed to create directory\nEntry: " + parentFile);
           }
 
-          //Writing to the new file
           FileOutputStream outputStream = new FileOutputStream(newFile);
           byte[] buf = new byte[1024];
           int len;
+
           while ((len = inputStream.read(buf)) > 0) {
             outputStream.write(buf, 0, len);
           }
+
           outputStream.close();
         }
+
         entry = inputStream.getNextEntry();
       }
+
       inputStream.closeEntry();
       inputStream.close();
     } catch (IOException err) {
@@ -122,11 +130,10 @@ public class Zip extends Format {
   @Override
   public File[] getFiles(File archiveName) {
     try {
-      //Create input stream from the archive
       ZipInputStream inputStream = new ZipInputStream(new FileInputStream(archiveName));
       ZipEntry entry = inputStream.getNextEntry();
-
       ArrayList<File> result = new ArrayList<>();
+
       while (entry != null) {
         result.add(new File(entry.getName()));
         entry = inputStream.getNextEntry();
@@ -134,7 +141,8 @@ public class Zip extends Format {
 
       inputStream.closeEntry();
       inputStream.close();
-      return result.toArray(new File[0]);
+
+      return result.toArray(File[]::new);
     } catch (final Exception e) {
       e.printStackTrace();
       return null;

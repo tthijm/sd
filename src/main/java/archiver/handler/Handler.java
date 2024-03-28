@@ -44,7 +44,7 @@ public class Handler {
     String[] splitted = getArguments(line);
     String commandString = splitted[0];
 
-    String[] arg = Arrays.copyOfRange(splitted, 1, splitted.length); //- to modify after making zip
+    String[] arg = Arrays.copyOfRange(splitted, 1, splitted.length);
 
     File[] arguments = toFileArray(arg);
 
@@ -62,7 +62,7 @@ public class Handler {
     do {
       System.out.println("type next command:");
 
-      input = inputStream.nextLine(); //"create has.zip testFolder";
+      input = inputStream.nextLine();
       parsedLine = parse(input);
       argumentsArray = parsedLine.getValue1();
 

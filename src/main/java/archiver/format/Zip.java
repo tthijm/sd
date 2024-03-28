@@ -77,7 +77,6 @@ public class Zip extends Format {
   @Override
   public void decompress(File archiveName, File outputDir) {
     try {
-      //Create input stream from the archive
       ZipInputStream inputStream = new ZipInputStream(new FileInputStream(archiveName));
       ZipEntry entry = inputStream.getNextEntry();
       while (entry != null) {
@@ -90,7 +89,6 @@ public class Zip extends Format {
           throw new IOException("Error: incorrect path\nEntry: " + entry.getName());
         }
 
-        //Check if directory exists or can be created
         if (entry.isDirectory()) {
           if (!newFile.isDirectory() && !newFile.mkdirs()) {
             inputStream.closeEntry();
@@ -105,7 +103,6 @@ public class Zip extends Format {
             throw new IOException("Error: failed to create directory\nEntry: " + parentFile);
           }
 
-          //Writing to the new file
           FileOutputStream outputStream = new FileOutputStream(newFile);
           byte[] buf = new byte[1024];
           int len;
@@ -126,7 +123,6 @@ public class Zip extends Format {
   @Override
   public File[] getFiles(File archiveName) {
     try {
-      //Create input stream from the archive
       ZipInputStream inputStream = new ZipInputStream(new FileInputStream(archiveName));
       ZipEntry entry = inputStream.getNextEntry();
 

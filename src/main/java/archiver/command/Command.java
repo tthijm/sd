@@ -7,8 +7,6 @@ import java.util.*;
 public abstract class Command {
 
   private static final int PASSWORD_ATTEMPTS = 3;
-  private static final String PASSWORD_PROMPT = "Password: ";
-  private static final String INCORRECT_PROMPT = "Incorrect, try again.";
   protected static final String ABORT_MESSAGE = "Incorrect, aborting.";
   private final String name;
   private static final Command[] COMMANDS = { new Create(), new Extract(), new List(), new Analyse() };
@@ -32,7 +30,7 @@ public abstract class Command {
     final Scanner scanner = new Scanner(System.in);
 
     for (int i = 0; i < PASSWORD_ATTEMPTS; i++) {
-      System.out.print(PASSWORD_PROMPT);
+      System.out.print("Password: ");
 
       final String line = scanner.nextLine();
 
@@ -40,7 +38,7 @@ public abstract class Command {
         return line;
       }
 
-      System.out.println(INCORRECT_PROMPT);
+      System.out.println("Incorrect, try again.");
     }
 
     return null;

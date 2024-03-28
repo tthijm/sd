@@ -16,6 +16,13 @@ public class Create extends Command {
     super(NAME);
   }
 
+  private Level getConfigLevel(String val) {
+    if (val.equals("none") || val.equals("low") || val.equals("medium") || val.equals("high")) {
+      return Level.valueOf(val);
+    }
+    return null;
+  }
+
   @Override
   public void execute(File[] arguments, HashMap<String, String> options) {
     if (arguments.length <= 1) {
@@ -61,12 +68,5 @@ public class Create extends Command {
 
       Encryption.encrypt(arguments[0], password);
     }
-  }
-
-  private Level getConfigLevel(String val) {
-    if (val.equals("none") || val.equals("low") || val.equals("medium") || val.equals("high")) {
-      return Level.valueOf(val);
-    }
-    return null;
   }
 }

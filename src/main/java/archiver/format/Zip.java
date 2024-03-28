@@ -35,23 +35,6 @@ public class Zip extends Format {
     );
   }
 
-  @Override
-  public void compress(File archiveName, File[] fileNames, Level config) {
-    try {
-      FileOutputStream outputFile = new FileOutputStream(archiveName);
-      ZipOutputStream zippedOutput = new ZipOutputStream(outputFile);
-      zippedOutput.setLevel(CONFIGURATION.get(config));
-
-      for (File fileName : fileNames) {
-        add(fileName, zippedOutput);
-      }
-      zippedOutput.close();
-      outputFile.close();
-    } catch (IOException exception) {
-      System.out.println(exception);
-    }
-  }
-
   private void add(File file, ZipOutputStream output) {
     try {
       if (file.isDirectory()) {
@@ -71,6 +54,23 @@ public class Zip extends Format {
       }
     } catch (IOException exception) {
       exception.printStackTrace();
+    }
+  }
+
+  @Override
+  public void compress(File archiveName, File[] fileNames, Level config) {
+    try {
+      FileOutputStream outputFile = new FileOutputStream(archiveName);
+      ZipOutputStream zippedOutput = new ZipOutputStream(outputFile);
+      zippedOutput.setLevel(CONFIGURATION.get(config));
+
+      for (File fileName : fileNames) {
+        add(fileName, zippedOutput);
+      }
+      zippedOutput.close();
+      outputFile.close();
+    } catch (IOException exception) {
+      System.out.println(exception);
     }
   }
 

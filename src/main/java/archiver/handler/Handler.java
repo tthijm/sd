@@ -31,6 +31,15 @@ public class Handler {
     return new HashMap<>(options);
   }
 
+  private File[] toFileArray(String[] fileStrings) {
+    File[] files = new File[fileStrings.length];
+    for (int i = 0; i < fileStrings.length; i++) {
+      File file = new File(fileStrings[i]);
+      files[i] = file;
+    }
+    return files;
+  }
+
   private Triplet<String, File[], HashMap<String, String>> parse(String line) {
     String[] splitted = getArguments(line);
     String commandString = splitted[0];
@@ -41,15 +50,6 @@ public class Handler {
 
     HashMap<String, String> options = getOptions(line);
     return new Triplet<>(commandString, arguments, options);
-  }
-
-  private File[] toFileArray(String[] fileStrings) {
-    File[] files = new File[fileStrings.length];
-    for (int i = 0; i < fileStrings.length; i++) {
-      File file = new File(fileStrings[i]);
-      files[i] = file;
-    }
-    return files;
   }
 
   public void loop() {

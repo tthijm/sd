@@ -11,14 +11,14 @@ import org.javatuples.*;
 
 public class Handler {
 
-  private static final Handler instance = new Handler();
+  private static final Handler INSTANCE = new Handler();
   private static final String OPTIONS_REGEX = "-([^ ]+) ([^ ]+) ?";
   private static final Pattern PATTERN = Pattern.compile(OPTIONS_REGEX);
 
   private Handler() {}
 
   public static Handler getInstance() {
-    return instance;
+    return INSTANCE;
   }
 
   protected static String[] getArguments(String line) {

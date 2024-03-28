@@ -17,7 +17,7 @@ public class Create extends Command {
   }
 
   @Override
-  public void run(File[] arguments, HashMap<String, String> options) {
+  public void execute(File[] arguments, HashMap<String, String> options) {
     if (arguments.length <= 1) {
       System.out.println("No files/folders to be archived provided");
       return;

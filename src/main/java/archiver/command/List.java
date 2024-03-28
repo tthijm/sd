@@ -14,7 +14,7 @@ public class List extends Command {
     super(NAME);
   }
 
-  public void run(File[] args, HashMap<String, String> options) {
+  public void execute(File[] args, HashMap<String, String> options) {
     if (args.length == 0) {
       System.out.println("No archive to be listed provided");
       return;

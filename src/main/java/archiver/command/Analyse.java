@@ -37,7 +37,7 @@ public class Analyse extends Command {
     return Stream.of(files).mapToLong(file -> file.isFile() ? file.length() : FileUtils.sizeOfDirectory(file)).sum();
   }
 
-  public void run(final File[] arguments, final HashMap<String, String> options) {
+  public void execute(final File[] arguments, final HashMap<String, String> options) {
     for (final File argument : arguments) {
       if (argument.exists() == false) {
         System.out.printf(NOT_FOUND_FORMAT, argument.getName());

@@ -13,7 +13,7 @@ public class Extract extends Command {
     super(NAME);
   }
 
-  public void run(File[] args, HashMap<String, String> options) {
+  public void execute(File[] args, HashMap<String, String> options) {
     if (args.length == 0) {
       System.out.println(
         "Invalid number of arguments. Please provide a file to be extracted and optionally a destination."

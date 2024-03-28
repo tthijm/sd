@@ -39,9 +39,10 @@ public class EncryptionTest {
   @Test
   public void getSameKey() {
     final String password = "qwerty";
+    final byte[] salt = Encryption.getRandomSalt();
 
-    final Key keyOne = Encryption.getKey(password);
-    final Key keyTwo = Encryption.getKey(password);
+    final Key keyOne = Encryption.getKey(password, salt);
+    final Key keyTwo = Encryption.getKey(password, salt);
 
     assertEquals(keyOne, keyTwo);
   }
@@ -50,9 +51,10 @@ public class EncryptionTest {
   public void getDifferentKeys() {
     final String passwordOne = "password";
     final String passwordTwo = "qwerty123";
+    final byte[] salt = Encryption.getRandomSalt();
 
-    final Key keyOne = Encryption.getKey(passwordOne);
-    final Key keyTwo = Encryption.getKey(passwordTwo);
+    final Key keyOne = Encryption.getKey(passwordOne, salt);
+    final Key keyTwo = Encryption.getKey(passwordTwo, salt);
 
     assertNotEquals(keyOne, keyTwo);
   }
@@ -115,11 +117,12 @@ public class EncryptionTest {
   public void encryptAndDecryptText() {
     final String password = "qwertyuiop";
     final String text = "Aut laboriosam maiores repellendus minima perspiciatis delectus.";
+    final byte[] salt = Encryption.getRandomSalt();
 
-    final Pair<byte[], byte[]> pair = Encryption.encrypt(text.getBytes(), password);
+    final Pair<byte[], byte[]> pair = Encryption.encrypt(text.getBytes(), password, salt);
     final byte[] iv = pair.getValue0();
     final byte[] encrypted = pair.getValue1();
-    final byte[] decrypted = Encryption.decrypt(encrypted, password, iv);
+    final byte[] decrypted = Encryption.decrypt(encrypted, password, salt, iv);
 
     assertFalse(Arrays.equals(text.getBytes(), encrypted));
     assertArrayEquals(text.getBytes(), decrypted);

@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.security.AlgorithmParameters;
 import java.security.Key;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -15,7 +16,8 @@ import org.javatuples.Pair;
 
 public class Encryption {
 
-  private static final String SALT = "pepper";
+  private static final SecureRandom RANDOM = new SecureRandom();
+  private static final int SALT_LENGTH = 8;
   private static final int SALT_ROUNDS = 10;
   private static final String MAGIC = "magic bytes";
   private static final String PREFIX = "E!";
@@ -37,15 +39,18 @@ public class Encryption {
     return merged;
   }
 
-  protected static Key getKey(final String password) {
+  protected static byte[] getRandomSalt() {
+    final byte[] salt = new byte[SALT_LENGTH];
+
+    RANDOM.nextBytes(salt);
+
+    return salt;
+  }
+
+  protected static Key getKey(final String password, final byte[] salt) {
     try {
       final SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(PASSWORD_ALGORITHM);
-      final PBEKeySpec passwordKey = new PBEKeySpec(
-        password.toCharArray(),
-        SALT.getBytes(),
-        SALT_ROUNDS,
-        PASSWORD_KEY_LENGTH
-      );
+      final PBEKeySpec passwordKey = new PBEKeySpec(password.toCharArray(), salt, SALT_ROUNDS, PASSWORD_KEY_LENGTH);
       final SecretKey otherKey = secretKeyFactory.generateSecret(passwordKey);
 
       return new SecretKeySpec(otherKey.getEncoded(), ENCRYPTION_ALGORITHM);
@@ -73,11 +78,16 @@ public class Encryption {
 
   public static boolean isPassword(final File file, final String password) {
     try {
-      final Key key = getKey(password);
       final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
       final byte[] content = Files.readAllBytes(file.toPath());
-      final byte[] iv = Arrays.copyOfRange(content, PREFIX.length(), PREFIX.length() + IV_LENGTH);
-      final byte[] encrypted = Arrays.copyOfRange(content, PREFIX.length() + IV_LENGTH, content.length);
+      final byte[] salt = Arrays.copyOfRange(content, PREFIX.length(), PREFIX.length() + SALT_LENGTH);
+      final byte[] iv = Arrays.copyOfRange(
+        content,
+        PREFIX.length() + SALT_LENGTH,
+        PREFIX.length() + SALT_LENGTH + IV_LENGTH
+      );
+      final byte[] encrypted = Arrays.copyOfRange(content, PREFIX.length() + SALT_LENGTH + IV_LENGTH, content.length);
+      final Key key = getKey(password, salt);
 
       cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
 
@@ -92,9 +102,9 @@ public class Encryption {
     }
   }
 
-  protected static Pair<byte[], byte[]> encrypt(final byte[] bytes, final String password) {
+  protected static Pair<byte[], byte[]> encrypt(final byte[] bytes, final String password, final byte[] salt) {
     try {
-      final Key key = getKey(password);
+      final Key key = getKey(password, salt);
       final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
 
       cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -114,19 +124,20 @@ public class Encryption {
   public static void encrypt(final File file, final String password) {
     try {
       final byte[] content = Files.readAllBytes(file.toPath());
-      final Pair<byte[], byte[]> pair = encrypt(merge(MAGIC.getBytes(), content), password);
+      final byte[] salt = getRandomSalt();
+      final Pair<byte[], byte[]> pair = encrypt(merge(MAGIC.getBytes(), content), password, salt);
       final byte[] iv = pair.getValue0();
       final byte[] encrypted = pair.getValue1();
 
-      Files.write(file.toPath(), merge(PREFIX.getBytes(), iv, encrypted));
+      Files.write(file.toPath(), merge(PREFIX.getBytes(), salt, iv, encrypted));
     } catch (final Exception e) {
       e.printStackTrace();
     }
   }
 
-  protected static byte[] decrypt(final byte[] bytes, final String password, final byte[] iv) {
+  protected static byte[] decrypt(final byte[] bytes, final String password, final byte[] salt, final byte[] iv) {
     try {
-      final Key key = getKey(password);
+      final Key key = getKey(password, salt);
       final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
 
       cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
@@ -142,9 +153,14 @@ public class Encryption {
   public static void decrypt(final File file, final String password) {
     try {
       final byte[] content = Files.readAllBytes(file.toPath());
-      final byte[] iv = Arrays.copyOfRange(content, PREFIX.length(), PREFIX.length() + IV_LENGTH);
-      final byte[] encrypted = Arrays.copyOfRange(content, PREFIX.length() + IV_LENGTH, content.length);
-      final byte[] decrypted = decrypt(encrypted, password, iv);
+      final byte[] salt = Arrays.copyOfRange(content, PREFIX.length(), PREFIX.length() + SALT_LENGTH);
+      final byte[] iv = Arrays.copyOfRange(
+        content,
+        PREFIX.length() + SALT_LENGTH,
+        PREFIX.length() + SALT_LENGTH + IV_LENGTH
+      );
+      final byte[] encrypted = Arrays.copyOfRange(content, PREFIX.length() + SALT_LENGTH + IV_LENGTH, content.length);
+      final byte[] decrypted = decrypt(encrypted, password, salt, iv);
 
       Files.write(file.toPath(), Arrays.copyOfRange(decrypted, MAGIC.length(), decrypted.length));
     } catch (final Exception e) {

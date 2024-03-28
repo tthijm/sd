@@ -38,6 +38,7 @@ public class Analyse extends Command {
     return Stream.of(files).mapToLong(file -> file.isFile() ? file.length() : FileUtils.sizeOfDirectory(file)).sum();
   }
 
+  @Override
   public void execute(final File[] arguments, final HashMap<String, String> options) {
     for (final File argument : arguments) {
       if (argument.exists() == false) {

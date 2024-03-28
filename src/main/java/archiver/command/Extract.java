@@ -13,6 +13,7 @@ public class Extract extends Command {
     super(NAME);
   }
 
+  @Override
   public void execute(File[] args, HashMap<String, String> options) {
     if (args.length == 0) {
       System.out.println(

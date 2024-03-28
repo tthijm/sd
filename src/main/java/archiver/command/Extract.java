@@ -14,46 +14,48 @@ public class Extract extends Command {
   }
 
   @Override
-  public void execute(File[] args, HashMap<String, String> options) {
-    if (args.length == 0) {
+  public void execute(File[] arguments, HashMap<String, String> options) {
+    if (arguments.length == 0) {
       System.out.println(
         "Invalid number of arguments. Please provide a file to be extracted and optionally a destination."
       );
       return;
     }
 
-    if (!args[0].exists()) {
+    if (!arguments[0].exists()) {
       System.out.println("The given archive does not exist. Please provide an existing archive.");
       return;
     }
 
-    final boolean hasPassword = Encryption.isEncrypted(args[0]);
-    Format fmt = Format.getInstance(args[0].getName());
+    final boolean hasPassword = Encryption.isEncrypted(arguments[0]);
+    Format fmt = Format.getInstance(arguments[0].getName());
 
     if (fmt == null) {
       System.out.println("Invalid format. Please provide a file with a valid extension.");
       return;
     }
 
-    File outputDir = args.length > 1 ? args[1] : new File(args[0].getName().replace(fmt.getFileExtension(), ""));
+    File outputDir = arguments.length > 1
+      ? arguments[1]
+      : new File(arguments[0].getName().replace(fmt.getFileExtension(), ""));
     if (outputDir.exists()) {
       System.out.println("The given destination already exists.");
       return;
     }
 
     if (hasPassword) {
-      final String password = promptPassword(args[0]);
+      final String password = promptPassword(arguments[0]);
 
       if (password == null) {
         System.out.println(ABORT_MESSAGE);
         return;
       }
 
-      Encryption.decrypt(args[0], password);
-      fmt.decompress(args[0], outputDir);
-      Encryption.encrypt(args[0], password);
+      Encryption.decrypt(arguments[0], password);
+      fmt.decompress(arguments[0], outputDir);
+      Encryption.encrypt(arguments[0], password);
     } else {
-      fmt.decompress(args[0], outputDir);
+      fmt.decompress(arguments[0], outputDir);
     }
   }
 }

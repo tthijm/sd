@@ -44,11 +44,10 @@ public class Zip extends Format {
       } else {
         FileInputStream fInput = new FileInputStream(file);
         ZipEntry zipEntry = new ZipEntry(file.getPath());
-        output.putNextEntry(zipEntry);
-
         byte[] fileNumBytes = Files.readAllBytes(Paths.get(file.getPath()));
-        output.write(fileNumBytes, 0, fileNumBytes.length);
 
+        output.putNextEntry(zipEntry);
+        output.write(fileNumBytes, 0, fileNumBytes.length);
         fInput.close();
         output.closeEntry();
       }
@@ -62,11 +61,13 @@ public class Zip extends Format {
     try {
       FileOutputStream outputFile = new FileOutputStream(archiveName);
       ZipOutputStream zippedOutput = new ZipOutputStream(outputFile);
+
       zippedOutput.setLevel(CONFIGURATION.get(config));
 
       for (File fileName : fileNames) {
         add(fileName, zippedOutput);
       }
+
       zippedOutput.close();
       outputFile.close();
     } catch (IOException exception) {
@@ -79,6 +80,7 @@ public class Zip extends Format {
     try {
       ZipInputStream inputStream = new ZipInputStream(new FileInputStream(archiveName));
       ZipEntry entry = inputStream.getNextEntry();
+
       while (entry != null) {
         File newFile = new File(outputDir, entry.getName());
 
@@ -97,6 +99,7 @@ public class Zip extends Format {
           }
         } else {
           File parentFile = newFile.getParentFile();
+
           if (!parentFile.isDirectory() && !parentFile.mkdirs()) {
             inputStream.closeEntry();
             inputStream.close();
@@ -106,13 +109,17 @@ public class Zip extends Format {
           FileOutputStream outputStream = new FileOutputStream(newFile);
           byte[] buf = new byte[1024];
           int len;
+
           while ((len = inputStream.read(buf)) > 0) {
             outputStream.write(buf, 0, len);
           }
+
           outputStream.close();
         }
+
         entry = inputStream.getNextEntry();
       }
+
       inputStream.closeEntry();
       inputStream.close();
     } catch (IOException err) {
@@ -125,8 +132,8 @@ public class Zip extends Format {
     try {
       ZipInputStream inputStream = new ZipInputStream(new FileInputStream(archiveName));
       ZipEntry entry = inputStream.getNextEntry();
-
       ArrayList<File> result = new ArrayList<>();
+
       while (entry != null) {
         result.add(new File(entry.getName()));
         entry = inputStream.getNextEntry();
@@ -134,7 +141,8 @@ public class Zip extends Format {
 
       inputStream.closeEntry();
       inputStream.close();
-      return result.toArray(new File[0]);
+
+      return result.toArray(File[]::new);
     } catch (final Exception e) {
       e.printStackTrace();
       return null;

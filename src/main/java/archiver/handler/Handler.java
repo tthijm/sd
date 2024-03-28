@@ -38,31 +38,22 @@ public class Handler {
 
   private Triplet<String, File[], HashMap<String, String>> parse(String line) {
     String[] splitted = getArguments(line);
-    String commandString = splitted[0];
-
-    String[] arg = Arrays.copyOfRange(splitted, 1, splitted.length);
-
-    File[] arguments = toFileArray(arg);
-
+    File[] arguments = toFileArray(Arrays.copyOfRange(splitted, 1, splitted.length));
     HashMap<String, String> options = getOptions(line);
-    return new Triplet<>(commandString, arguments, options);
+
+    return new Triplet<>(splitted[0], arguments, options);
   }
 
   public void loop() {
     Scanner inputStream = new Scanner(System.in);
-    String input;
-    Triplet<String, File[], HashMap<String, String>> parsedLine;
-    File[] argumentsArray;
-    HashMap<String, String> optionsMap;
 
     do {
       System.out.println("type next command:");
 
-      input = inputStream.nextLine();
-      parsedLine = parse(input);
-      argumentsArray = parsedLine.getValue1();
-
-      optionsMap = parsedLine.getValue2();
+      String input = inputStream.nextLine();
+      Triplet<String, File[], HashMap<String, String>> parsedLine = parse(input);
+      File[] argumentsArray = parsedLine.getValue1();
+      HashMap<String, String> optionsMap = parsedLine.getValue2();
       final Command command = Command.getInstance(parsedLine.getValue0());
 
       if (parsedLine.getValue0().equalsIgnoreCase("quit")) {

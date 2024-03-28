@@ -27,23 +27,22 @@ public class Extract extends Command {
       return;
     }
 
-    final boolean hasPassword = Encryption.isEncrypted(arguments[0]);
     Format fmt = Format.getInstance(arguments[0].getName());
+    File outputDir = arguments.length > 1
+      ? arguments[1]
+      : new File(arguments[0].getName().replace(fmt.getFileExtension(), ""));
 
     if (fmt == null) {
       System.out.println("Invalid format. Please provide a file with a valid extension.");
       return;
     }
 
-    File outputDir = arguments.length > 1
-      ? arguments[1]
-      : new File(arguments[0].getName().replace(fmt.getFileExtension(), ""));
     if (outputDir.exists()) {
       System.out.println("The given destination already exists.");
       return;
     }
 
-    if (hasPassword) {
+    if (Encryption.isEncrypted(arguments[0])) {
       final String password = promptPassword(arguments[0]);
 
       if (password == null) {

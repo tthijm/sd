@@ -19,15 +19,18 @@ public class List extends Command {
     if (arguments.length == 0) {
       System.out.println("No archive to be listed provided");
       return;
-    } else if (arguments.length > 1) {
+    }
+
+    if (arguments.length > 1) {
       System.out.println("Invalid input, too many arguments");
       return;
-    } else if (!arguments[0].exists()) {
+    }
+
+    if (!arguments[0].exists()) {
       System.out.println(arguments[0].getName() + " does not exist");
       return;
     }
 
-    final boolean hasPassword = Encryption.isEncrypted(arguments[0]);
     Format fmt = Format.getInstance(arguments[0].getName());
     File[] files;
 
@@ -36,7 +39,7 @@ public class List extends Command {
       return;
     }
 
-    if (hasPassword) {
+    if (Encryption.isEncrypted(arguments[0])) {
       final String password = promptPassword(arguments[0]);
 
       if (password == null) {
@@ -52,7 +55,9 @@ public class List extends Command {
     } else {
       files = fmt.getFiles(arguments[0]);
     }
+
     System.out.println("list of files in " + arguments[0].getName() + ":");
+
     for (int i = 0; i < files.length; i++) {
       System.out.println((i + 1) + ". " + files[i].getPath());
     }

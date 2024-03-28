@@ -26,6 +26,9 @@ public class Create extends Command {
 
   @Override
   public void execute(File[] arguments, HashMap<String, String> options) {
+    Format compressionFormat = Format.getInstance(options.getOrDefault("f", DEFAULT_FORMAT_NAME));
+    Level config = getConfigLevel(options.getOrDefault("c", "medium"));
+
     if (arguments.length <= 1) {
       System.out.println("No files/folders to be archived provided");
       return;
@@ -38,14 +41,11 @@ public class Create extends Command {
       }
     }
 
-    Format compressionFormat = Format.getInstance(options.getOrDefault("f", DEFAULT_FORMAT_NAME));
-
     if (compressionFormat == null) {
       System.out.println("Compression format does not exist.");
       return;
     }
 
-    Level config = getConfigLevel(options.getOrDefault("c", "medium"));
     if (config == null) {
       System.out.println("Invalid compression level.");
       return;
@@ -61,9 +61,7 @@ public class Create extends Command {
     compressionFormat.compress(arguments[0], Arrays.copyOfRange(arguments, 1, arguments.length), config);
 
     if (options.containsKey("p")) {
-      final String password = options.get("p");
-
-      Encryption.encrypt(arguments[0], password);
+      Encryption.encrypt(arguments[0], options.get("p"));
     }
   }
 }

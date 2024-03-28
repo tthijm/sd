@@ -18,7 +18,7 @@ public class Encryption {
 
   private static final SecureRandom RANDOM = new SecureRandom();
   private static final int SALT_LENGTH = 8;
-  private static final int SALT_ROUNDS = 10;
+  private static final int SALT_ROUNDS = 10000;
   private static final String MAGIC = "magic bytes";
   private static final String PREFIX = "E!";
   private static final int PASSWORD_KEY_LENGTH = 128;
